@@ -21,3 +21,4 @@ public class MezzoTrasporto {
 // ciao Filippo
 // ciao
 // mezzo inserit
+//aggiungere condizione tappa
