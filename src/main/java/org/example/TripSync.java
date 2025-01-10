@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.naming.PartialResultException;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,13 +15,15 @@ public class TripSync {
     private Partecipante p;
 
 
-    private TripSync() {
+    TripSync() {
         this.elencoViaggi = new HashMap<>();
         this.elencoUtenti = new HashMap<>();
         this.v= null;
         this.viaggioSelezionato=null;
         this.p=null;
     }
+
+
 
     public static TripSync getInstance() {
         if (instance == null) {
@@ -35,6 +38,11 @@ public class TripSync {
 
         }
         else v= new Viaggio(codice, partenza, destinazione);
+        System.out.println("Viaggio creato correttamente");
+    }
+
+    public Viaggio getV() {
+        return v;
     }
 
     public void aggiungiMezzo(String nome, double costo) {

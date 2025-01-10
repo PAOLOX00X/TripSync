@@ -32,6 +32,7 @@ public class Viaggio {
         MezzoTrasporto mt;
         mt=new MezzoTrasporto(nome, costo);
         elencoMezzi.add(mt);
+        System.out.println("Aggiunto il mezzo con mezzo "+mt.getNome()+" e costo "+mt.getCosto());
     }
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
@@ -79,5 +80,7 @@ public class Viaggio {
         return destinazione;
     }
 
-
+    public List<MezzoTrasporto> getElencoMezzi() {
+        return elencoMezzi;
+    }
 }
