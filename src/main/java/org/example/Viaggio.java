@@ -1,4 +1,7 @@
 package org.example;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -12,6 +15,8 @@ public class Viaggio {
     private List<MezzoTrasporto> elencoMezzi;
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
+    private Tappa t;
+
 
     public Viaggio(int codice, String partenza, String destinazione) {
         this.codice = codice;
@@ -30,6 +35,21 @@ public class Viaggio {
     }
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
+        LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
+        if(dataInizio.equals(dataFine)){
+            System.out.println("Errore: la data di inizio e fine e' la stessa");
+            return;
+        }
+
+        for (Tappa tappa : elencoTappe) {
+            if (tappa.getInizio().equals(dataInizio) && tappa.getFine().equals(dataFine)) {
+                System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
+                return;
+            }
+        }
         Tappa t=new Tappa(luogo, inizio, fine, costo);
         elencoTappe.add(t);
     }
@@ -38,7 +58,7 @@ public class Viaggio {
             elencoPartecipanti.put(nomeUtente, p);
     }
 
-    Tappa t;
+
     public void visualizzaItinerario() {
         for(int i=0;i<elencoTappe.size();i++){
             t=elencoTappe.get(i);

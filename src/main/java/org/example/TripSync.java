@@ -9,13 +9,17 @@ public class TripSync {
     private static TripSync instance = null;
     private Map<Integer, Viaggio> elencoViaggi;
     private Map<String, Partecipante> elencoUtenti;
-
+    private Viaggio v;
+    private Viaggio viaggioSelezionato;
+    private Partecipante p;
 
 
     private TripSync() {
         this.elencoViaggi = new HashMap<>();
         this.elencoUtenti = new HashMap<>();
-        this.viaggioSelezionato = null;
+        this.v= null;
+        this.viaggioSelezionato=null;
+        this.p=null;
     }
 
     public static TripSync getInstance() {
@@ -25,8 +29,6 @@ public class TripSync {
         return instance;
     }
 
-
-    private Viaggio v;
     public void creaViaggio(int codice, String partenza, String destinazione) {
         if(elencoViaggi.containsKey(codice)==true){
             System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
@@ -49,7 +51,7 @@ public class TripSync {
     }
 
 
-    private Viaggio viaggioSelezionato;
+
     public Viaggio selezionaViaggio(int codice) {
 
         if(elencoViaggi.containsKey(codice)==true){
@@ -59,8 +61,6 @@ public class TripSync {
         else return null;
     }
 
-
-    private Partecipante p;
     public Partecipante inserisciPartecipante(String nomeUtente) {
 
         if(elencoUtenti.containsKey(nomeUtente)==true){
@@ -72,7 +72,7 @@ public class TripSync {
 
     public void confermaPartecipante() {
         String nomeUtente=p.getNomeUtente();
-        v.confermaPartecipante(nomeUtente, p);
+        viaggioSelezionato.confermaPartecipante(nomeUtente, p);
 
     }
 
