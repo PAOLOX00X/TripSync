@@ -22,3 +22,4 @@ public class MezzoTrasporto {
 // ciao
 // mezzo inserit
 //aggiungere condizione tappa
+//Barbara Fantastica
