@@ -18,55 +18,6 @@ public class Viaggio {
     private Tappa t;
 
 
-    public Viaggio(int codice, String partenza, String destinazione) {
-        this.codice = codice;
-        this.partenza = partenza;
-        this.destinazione = destinazione;
-        this.elencoMezzi = new ArrayList<>();
-        this.elencoTappe = new ArrayList<>();
-        this.elencoPartecipanti = new HashMap<>();
-    }
-
-
-    public void aggiungiMezzo(String nome, double costo) {
-        MezzoTrasporto mt;
-        mt=new MezzoTrasporto(nome, costo);
-        elencoMezzi.add(mt);
-        System.out.println("Aggiunto il mezzo con mezzo "+mt.getNome()+" e costo "+mt.getCosto());
-    }
-
-    public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
-        LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
-        if(dataInizio.equals(dataFine)){
-            System.out.println("Errore: la data di inizio e fine e' la stessa");
-            return;
-        }
-
-        for (Tappa tappa : elencoTappe) {
-            if (tappa.getInizio().equals(dataInizio) && tappa.getFine().equals(dataFine)) {
-                System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
-                return;
-            }
-        }
-        Tappa t=new Tappa(luogo, inizio, fine, costo);
-        elencoTappe.add(t);
-    }
-
-    public void confermaPartecipante(String nomeUtente, Partecipante p) {
-            elencoPartecipanti.put(nomeUtente, p);
-    }
-
-
-    public void visualizzaItinerario() {
-        for(int i=0;i<elencoTappe.size();i++){
-            t=elencoTappe.get(i);
-            System.out.println(t);
-        }
-    }
-
 
     public int getCodice() {
         return codice;
@@ -82,5 +33,77 @@ public class Viaggio {
 
     public List<MezzoTrasporto> getElencoMezzi() {
         return elencoMezzi;
+    }
+
+    public List<Tappa> getElencoTappe() {
+        return elencoTappe;
+    }
+
+    public Map<String, Partecipante> getElencoPartecipanti() {
+        return elencoPartecipanti;
+    }
+
+    public Tappa getT() {
+        return t;
+    }
+
+    public Viaggio(int codice, String partenza, String destinazione) {
+        this.codice = codice;
+        this.partenza = partenza;
+        this.destinazione = destinazione;
+        this.elencoMezzi = new ArrayList<>();
+        this.elencoTappe = new ArrayList<>();
+        this.elencoPartecipanti = new HashMap<>();
+    }
+
+
+    public void aggiungiMezzo(String nome, double costo) {
+        MezzoTrasporto mt;
+        mt=new MezzoTrasporto(nome, costo);
+        elencoMezzi.add(mt);
+        System.out.println("Aggiunto il mezzo con mezzo all'elenco ");
+    }
+
+    public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
+        LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
+        if(dataInizio.equals(dataFine)){
+            System.out.println("Errore: la data di inizio e fine e' la stessa");
+            return;
+        }
+
+        for (Tappa tappa : elencoTappe) {
+            if (tappa.getInizio().equals(inizio) && tappa.getFine().equals(fine)) {
+                System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
+                return;
+            }
+        }
+        Tappa t=new Tappa(luogo, inizio, fine, costo);
+        elencoTappe.add(t);
+        System.out.println("Tappa aggiunta correttamente all'elenco");
+    }
+
+    public void confermaPartecipante(String nomeUtente, Partecipante p) {
+            elencoPartecipanti.put(nomeUtente, p);
+            System.out.println("Partecipante aggiunto correttamente all'elenco ");
+    }
+
+
+    public void visualizzaItinerario() {
+        for(int i=0;i<elencoTappe.size();i++){
+            t=elencoTappe.get(i);
+            System.out.println("Luogo: "+t.getLuogo()+" Inizio: "+t.getInizio()+" Fine: "+t.getFine()+" Costo: "+t.getCosto());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Viaggio{" +
+                "codice=" + codice +
+                ", partenza='" + partenza + '\'' +
+                ", destinazione='" + destinazione + '\'' +
+                '}';
     }
 }

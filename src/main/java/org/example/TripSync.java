@@ -23,8 +23,6 @@ public class TripSync {
         this.p=null;
     }
 
-
-
     public static TripSync getInstance() {
         if (instance == null) {
             instance = new TripSync();
@@ -32,17 +30,37 @@ public class TripSync {
         return instance;
     }
 
+    public Map<Integer, Viaggio> getElencoViaggi() {
+        return elencoViaggi;
+    }
+
+    public Viaggio getV() {
+        return v;
+    }
+
+    public Map<String, Partecipante> getElencoUtenti() {
+        return elencoUtenti;
+    }
+
+    public Partecipante getP() {
+        return p;
+    }
+
+    public Viaggio getViaggioSelezionato() {
+        return viaggioSelezionato;
+    }
+
+
     public void creaViaggio(int codice, String partenza, String destinazione) {
         if(elencoViaggi.containsKey(codice)==true){
             System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
 
         }
-        else v= new Viaggio(codice, partenza, destinazione);
-        System.out.println("Viaggio creato correttamente");
-    }
+        else{
+            v= new Viaggio(codice, partenza, destinazione);
+            System.out.println("Viaggio creato correttamente");
+        }
 
-    public Viaggio getV() {
-        return v;
     }
 
     public void aggiungiMezzo(String nome, double costo) {
@@ -56,8 +74,8 @@ public class TripSync {
     public void confermaInserimento() {
         Integer codice=v.getCodice();
         elencoViaggi.put(codice, v);
+        System.out.println("Viaggio aggiunto correttamente all'elenco");
     }
-
 
 
     public Viaggio selezionaViaggio(int codice) {
@@ -81,7 +99,6 @@ public class TripSync {
     public void confermaPartecipante() {
         String nomeUtente=p.getNomeUtente();
         viaggioSelezionato.confermaPartecipante(nomeUtente, p);
-
     }
 
     public Viaggio recuperaViaggio(int codice) {
