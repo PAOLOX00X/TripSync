@@ -21,7 +21,19 @@ public class TripSync {
         this.v= null;
         this.viaggioSelezionato=null;
         this.p=null;
+        loadUtenti();
     }
+
+    public void loadUtenti(){
+        Partecipante p2=new Partecipante("Barbara");
+        Partecipante p1=new Partecipante("Filippo");
+        Partecipante p3=new Partecipante("Paolo");
+
+        this.elencoUtenti.put("Filippo", p1);
+        this.elencoUtenti.put("Barbara", p2);
+        this.elencoUtenti.put("Paolo", p3);
+    }
+
 
     public static TripSync getInstance() {
         if (instance == null) {
@@ -37,6 +49,7 @@ public class TripSync {
     public Viaggio getV() {
         return v;
     }
+
 
     public Map<String, Partecipante> getElencoUtenti() {
         return elencoUtenti;
@@ -101,13 +114,7 @@ public class TripSync {
         viaggioSelezionato.confermaPartecipante(nomeUtente, p);
     }
 
-    public Viaggio recuperaViaggio(int codice) {
-        if(elencoViaggi.containsKey(codice)==true){
-            viaggioSelezionato= elencoViaggi.get(codice);
-            return viaggioSelezionato;
-        }
-        else return null;
-    }
+
 
     public void visualizzaItinerario() {
         viaggioSelezionato.visualizzaItinerario();

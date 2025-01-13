@@ -15,7 +15,7 @@ public class Viaggio {
     private List<MezzoTrasporto> elencoMezzi;
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
-    private Tappa t;
+
 
 
 
@@ -43,9 +43,7 @@ public class Viaggio {
         return elencoPartecipanti;
     }
 
-    public Tappa getT() {
-        return t;
-    }
+
 
     public Viaggio(int codice, String partenza, String destinazione) {
         this.codice = codice;
@@ -61,7 +59,7 @@ public class Viaggio {
         MezzoTrasporto mt;
         mt=new MezzoTrasporto(nome, costo);
         elencoMezzi.add(mt);
-        System.out.println("Aggiunto il mezzo con mezzo all'elenco ");
+        System.out.println("Aggiunto il mezzo all'elenco ");
     }
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
@@ -74,11 +72,17 @@ public class Viaggio {
             return;
         }
 
+        if(dataInizio.isAfter(dataFine)){
+            System.out.println("Errore: il software non è una macchina del tempo. Inserire date corrette");
+            return;
+        }
+
         for (Tappa tappa : elencoTappe) {
             if (tappa.getInizio().equals(inizio) && tappa.getFine().equals(fine)) {
                 System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
                 return;
             }
+
         }
         Tappa t=new Tappa(luogo, inizio, fine, costo);
         elencoTappe.add(t);
@@ -86,24 +90,23 @@ public class Viaggio {
     }
 
     public void confermaPartecipante(String nomeUtente, Partecipante p) {
-            elencoPartecipanti.put(nomeUtente, p);
-            System.out.println("Partecipante aggiunto correttamente all'elenco ");
+            if(elencoPartecipanti.containsKey(nomeUtente)){
+                System.out.println("errore! partecipante già presente");
+            }
+            else {
+                elencoPartecipanti.put(nomeUtente, p);
+                System.out.println("Partecipante aggiunto correttamente all'elenco ");
+            }
     }
 
 
     public void visualizzaItinerario() {
+        System.out.println("Codice: "+getCodice()+" Partenza: "+getPartenza()+" Destinazione: "+getDestinazione());
         for(int i=0;i<elencoTappe.size();i++){
-            t=elencoTappe.get(i);
+            Tappa t=elencoTappe.get(i);
             System.out.println("Luogo: "+t.getLuogo()+" Inizio: "+t.getInizio()+" Fine: "+t.getFine()+" Costo: "+t.getCosto());
         }
     }
 
-    @Override
-    public String toString() {
-        return "Viaggio{" +
-                "codice=" + codice +
-                ", partenza='" + partenza + '\'' +
-                ", destinazione='" + destinazione + '\'' +
-                '}';
-    }
+
 }
