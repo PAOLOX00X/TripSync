@@ -35,7 +35,7 @@ public class TripSync {
         this.elencoUtenti.put("Barbara", p2);
         this.elencoUtenti.put("Paolo", p3);
     }
-
+//
 
     public static TripSync getInstance() {
         if (instance == null) {
