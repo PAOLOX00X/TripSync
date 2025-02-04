@@ -15,7 +15,7 @@ public class Viaggio {
     private List<MezzoTrasporto> elencoMezzi;
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
-
+    private Tappa t;
 
 
 
