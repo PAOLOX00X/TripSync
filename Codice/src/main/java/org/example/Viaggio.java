@@ -16,7 +16,7 @@ public class Viaggio {
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
 
-
+    private Tappa t;
 
 
     public int getCodice() {
@@ -62,31 +62,42 @@ public class Viaggio {
         System.out.println("Aggiunto il mezzo all'elenco ");
     }
 
-    public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
-
+    public Integer verificaTappa(String luogo,String inizio,String fine,double costo){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
         LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
         if(dataInizio.equals(dataFine)){
             System.out.println("Errore: la data di inizio e fine e' la stessa");
-            return;
+            return 0;
         }
 
         if(dataInizio.isAfter(dataFine)){
             System.out.println("Errore: il software non è una macchina del tempo. Inserire date corrette");
-            return;
+            return 0;
         }
 
         for (Tappa tappa : elencoTappe) {
             if (tappa.getInizio().equals(inizio) && tappa.getFine().equals(fine)) {
                 System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
-                return;
+                return 0;
             }
 
         }
-        Tappa t=new Tappa(luogo, inizio, fine, costo);
-        elencoTappe.add(t);
-        System.out.println("Tappa aggiunta correttamente all'elenco");
+        return 1;
+    }
+
+
+    public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
+
+        if(verificaTappa(luogo, inizio, fine, costo)==0){
+            System.out.println("Errore! tappa non aggiunta");
+        }
+        else{
+            Tappa t=new Tappa(luogo, inizio, fine, costo);
+            elencoTappe.add(t);
+            System.out.println("Tappa aggiunta correttamente all'elenco");
+        }
+
     }
 
     public void confermaPartecipante(String nomeUtente, Partecipante p) {
@@ -106,6 +117,43 @@ public class Viaggio {
             Tappa t=elencoTappe.get(i);
             System.out.println("Luogo: "+t.getLuogo()+" Inizio: "+t.getInizio()+" Fine: "+t.getFine()+" Costo: "+t.getCosto());
         }
+    }
+
+    public Tappa SelezionaTappa(String Luogo, String Inizio, String Fine, double Costo){
+
+
+            for (Tappa t: elencoTappe) {
+                if (t.getLuogo().equals(Luogo)
+                        && t.getInizio().equals(Inizio)
+                        && t.getFine().equals(Fine)
+                        && t.getCosto() == Costo) {
+
+
+                    return t;
+                }
+            }
+
+            return null;
+    }
+
+    public void ModificaTappa(Tappa t, String Luogo, String Inizio, String Fine, double Costo){
+        int i=elencoTappe.indexOf(t);
+        if(verificaTappa(Luogo, Inizio, Fine, Costo)==0){
+            System.out.println("Errore! impossibile modificare la tappa!");
+        }
+        else{
+            elencoTappe.get(i).setLuogo(Inizio);
+            elencoTappe.get(i).setInizio(Inizio);
+            elencoTappe.get(i).setFine(Fine);
+            elencoTappe.get(i).setCosto(Costo);
+            System.out.println("Modifica effettuata con successo!");
+        }
+
+    }
+
+    public void EliminaTappa(Tappa t){
+        elencoTappe.remove(t);
+        System.out.println("Rimozione avvenuta con successo");
     }
 
 

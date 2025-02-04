@@ -8,5 +8,6 @@ public class Main {
         // to see how IntelliJ IDEA suggests fixing it.
         TripSync tripSync= TripSync.getInstance();
         tripSync.loadUtenti();
+        tripSync.loadViaggiEffettuati();
     }
 }
