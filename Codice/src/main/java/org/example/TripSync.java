@@ -30,12 +30,12 @@ public class TripSync {
     }
 
     public void loadUtenti(){
-        Partecipante p2=new Partecipante("Barbara", "bf231202");
-        Partecipante p1=new Partecipante("Filippo", "ff270402");
+        Partecipante p1=new Partecipante("Barbara", "bf231202");
+        Partecipante p2=new Partecipante("Filippo", "ff270402");
         Partecipante p3=new Partecipante("Paolo", "pa251002");
 
-        this.elencoUtenti.put("Filippo", p1);
-        this.elencoUtenti.put("Barbara", p2);
+        this.elencoUtenti.put("Filippo", p2);
+        this.elencoUtenti.put("Barbara", p1);
         this.elencoUtenti.put("Paolo", p3);
     }
 
@@ -79,11 +79,19 @@ public class TripSync {
         ve1.getElencoPartecipanti().put("Filippo", p2);
         ve1.getElencoPartecipanti().put("Paolo", p3);
 
+
+
         ve2.getElencoPartecipanti().put("Paolo", p3);
         ve2.getElencoPartecipanti().put("Barbara", p1);
 
+
+
         ve3.getElencoPartecipanti().put("Paolo", p3);
         ve3.getElencoPartecipanti().put("Filippo", p2);
+
+
+
+
 
         elencoViaggiEffettuati.put(001, ve1);
         elencoViaggiEffettuati.put(002, ve2);
@@ -123,6 +131,22 @@ public class TripSync {
         return viaggioSelezionato;
     }
 
+
+    public Tappa getT() {
+        return t;
+    }
+
+    public ViaggioEffettuato getVe() {
+        return ve;
+    }
+
+    public Feedback getF() {
+        return f;
+    }
+
+    public Map<Integer, ViaggioEffettuato> getElencoViaggiEffettuati() {
+        return elencoViaggiEffettuati;
+    }
 
     public void creaViaggio(int codice, String partenza, String destinazione) {
         if(elencoViaggi.containsKey(codice)==true){
@@ -201,8 +225,14 @@ public class TripSync {
     }
 
     public Partecipante InserisciCredenziali(String nomeUtente, String Password){
-        p=ve.InserisciCredenziali(nomeUtente, Password);
-        return p;
+        p=ve.getElencoPartecipanti().get(nomeUtente);
+        if (p != null && p.getPassword().equals(Password)) {
+
+            return p;
+        } else {
+            System.out.println("Credenziali non valide o partecipante non trovato.");
+            return null;
+        }
     }
 
     public Feedback InsersciFeedback(Integer numStelle, String Descrizione){

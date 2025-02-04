@@ -17,7 +17,7 @@ public class Viaggio {
     private Map<String, Partecipante> elencoPartecipanti;
 
     private Tappa t;
-
+    private Partecipante p;
 
     public int getCodice() {
         return codice;
@@ -43,7 +43,9 @@ public class Viaggio {
         return elencoPartecipanti;
     }
 
-
+    public Tappa getT() {
+        return t;
+    }
 
     public Viaggio(int codice, String partenza, String destinazione) {
         this.codice = codice;

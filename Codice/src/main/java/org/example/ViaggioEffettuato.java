@@ -25,21 +25,15 @@ public class ViaggioEffettuato extends Viaggio{
         this.elencoFeedback=new ArrayList<>();
     }
 
-    public Partecipante InserisciCredenziali(String nomeUtente, String password){
-        p=elencoPartecipanti.get(nomeUtente);
-        if(p!=null){
-            if(p.getPassword().equals(password)){
-                return p;
-            }
-            else return null;
-        }
 
-        else return null;
-    }
+
+
+
 
     public void ConfermaFeedback(Feedback f){
         elencoFeedback.add(f);
         System.out.println("Feedback aggiunto correttamente");
     }
+
 
 }

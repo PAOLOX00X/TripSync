@@ -34,7 +34,7 @@ public class ViaggioTest {
     public void TestConfermaPartecipante(){
 
         Viaggio v=new Viaggio(3, "Firenze", "Bologna");
-        Partecipante p1=new Partecipante("Barbara");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202");
         v.confermaPartecipante("Barbara", p1);
         assertEquals("Barbara", v.getElencoPartecipanti().get("Barbara").getNomeUtente());
 
@@ -50,4 +50,31 @@ public class ViaggioTest {
         v.aggiungiTappa("Louvre", "2025-02-07 10:00", "2025-02-07 13:00", 15.00);
         v.visualizzaItinerario();
     }
+
+    @Test
+    public void TestSelezionaTappa(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
+        assertNotNull(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+
+        //l'operazione ritorna un valore nullo perchè la tappa non esiste
+        assertNull(v.SelezionaTappa("Piazza plebiscito", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+
+    }
+
+
+    @Test
+    public void TestEliminaTappa(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
+
+        v.EliminaTappa(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+
+        //L'operazione ritorna un valore nullo perchè la tappa non esiste più
+        assertNull(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+
+    }
+
+
+
 }

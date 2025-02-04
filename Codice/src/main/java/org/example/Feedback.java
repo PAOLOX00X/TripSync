@@ -8,4 +8,13 @@ public class Feedback {
         this.numeroStelle = numeroStelle;
         this.descrizione= descrizione;
     }
+
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "numeroStelle=" + numeroStelle +
+                ", descrizione='" + descrizione + '\'' +
+                '}';
+    }
 }

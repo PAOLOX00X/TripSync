@@ -114,5 +114,95 @@ public class TripSyncTest {
 
     }
 
+    @Test
+    public void TestSelezionaTappa(){
+        tripSync.creaViaggio(3,"Firenze", "Bologna");
+        tripSync.aggiungiTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
+        tripSync.confermaInserimento();
+
+        assertNotNull(tripSync.selezionaViaggio(3));
+        assertNotNull(tripSync.SelezionaTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
+
+        //L'operazione restituisce un valore nullo perchè la tappa non esiste
+        assertNull(tripSync.SelezionaTappa("Castello di Paterno", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
+
+
+    }
+
+    @Test
+    public void TestModificaTappa(){
+        tripSync.creaViaggio(001,"Catania", "Milano");
+        tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
+        tripSync.confermaInserimento();
+
+        assertNotNull(tripSync.selezionaViaggio(001));
+        assertNotNull(tripSync.SelezionaTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
+
+        tripSync.ModificaTappa("Stadio San Siro", "2025-06-25 16:00", "2025-06-25 18:00", 35.00);
+
+
+        //L'operazione non va a buon fine perchè l'ora di inizio è maggiore
+        tripSync.ModificaTappa("Stadio San Siro", "2025-06-25 19:00", "2025-06-25 18:00", 35.00);
+    }
+
+
+    @Test
+    public void TestEliminaTappa(){
+        tripSync.creaViaggio(001,"Catania", "Milano");
+        tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
+        tripSync.confermaInserimento();
+
+        assertNotNull(tripSync.selezionaViaggio(001));
+
+        assertNotNull(tripSync.SelezionaTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
+
+        tripSync.EliminaTappa();
+
+    }
+
+    @Test
+    public void TestSelezionaViaggioEffettuato(){
+        assertNotNull(tripSync.SelezionaViaggioEffettuato(001));
+
+        //l'operazione restituisce un valore null perchè il viaggio non esiste
+        assertNull(tripSync.SelezionaViaggioEffettuato(005));
+
+    }
+
+    @Test
+    public void TestInserisciCredenziali(){
+
+
+        assertNotNull(tripSync.SelezionaViaggioEffettuato(002));
+        System.out.println("Viaggio selezionato: " + tripSync.getVe().getCodice());
+        System.out.println("Partecipanti del viaggio selezionato: " + tripSync.getVe().getElencoPartecipanti());
+        assertNull(tripSync.InserisciCredenziali("Barbara", "arena"));
+
+
+    }
+
+    @Test
+    public void TestInserisciFeedback(){
+        assertNotNull(tripSync.SelezionaViaggioEffettuato(003));
+        assertNotNull(tripSync.InserisciCredenziali("Filippo", "ff270402"));
+        assertNotNull(tripSync.InsersciFeedback(5, "viaggio molto divertente"));
+
+        System.out.println(tripSync.InsersciFeedback(5, "viaggio molto divertente"));
+
+        //L'operazione ritorna null perchè il numero di stelle è insufficiente
+        assertNull(tripSync.InsersciFeedback(6, "viaggio non corretto"));
+
+    }
+
+    @Test
+    public void TestConfermaFeedback(){
+        assertNotNull(tripSync.SelezionaViaggioEffettuato(003));
+        assertNotNull(tripSync.InserisciCredenziali("Filippo", "ff270402"));
+        assertNotNull(tripSync.InsersciFeedback(5, "viaggio molto divertente"));
+
+        tripSync.ConfermaFeedback();
+    }
+
+
 
 }

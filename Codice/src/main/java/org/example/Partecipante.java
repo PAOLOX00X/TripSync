@@ -18,12 +18,18 @@ public class Partecipante {
     }
 
     public Feedback InserisciFeedback(Integer numStelle, String Descrizione){
-        if(numStelle>=1 && numStelle<=5){
+        if(numStelle>=0 && numStelle<=5){
             Feedback f= new Feedback(numStelle, Descrizione);
             return f;
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Nome utente: " + nomeUtente + ", Password: " + password;
+    }
+
 }
 
 
