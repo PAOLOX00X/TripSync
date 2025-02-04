@@ -13,9 +13,7 @@ public class TripSync {
     private Viaggio v;
     private Viaggio viaggioSelezionato;
     private Partecipante p;
-    private Feedback f;
-    private Tappa t;
-    private ViaggioEffettuato ve;
+
 
     TripSync() {
         this.elencoViaggi = new HashMap<>();
@@ -27,7 +25,7 @@ public class TripSync {
     }
 
     public void loadUtenti(){
-        Partecipante p2=new Partecipante("Barbara", );
+        Partecipante p2=new Partecipante("Barbara");
         Partecipante p1=new Partecipante("Filippo");
         Partecipante p3=new Partecipante("Paolo");
 
@@ -35,7 +33,7 @@ public class TripSync {
         this.elencoUtenti.put("Barbara", p2);
         this.elencoUtenti.put("Paolo", p3);
     }
-//
+
 
     public static TripSync getInstance() {
         if (instance == null) {
