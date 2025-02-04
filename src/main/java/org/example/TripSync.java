@@ -10,6 +10,7 @@ public class TripSync {
     private static TripSync instance = null;
     private Map<Integer, Viaggio> elencoViaggi;
     private Map<String, Partecipante> elencoUtenti;
+    private Map<Integer, ViaggioEffettuato> elencoViaggiEffettuati;
     private Viaggio v;
     private Viaggio viaggioSelezionato;
     private Partecipante p;
@@ -18,6 +19,7 @@ public class TripSync {
     TripSync() {
         this.elencoViaggi = new HashMap<>();
         this.elencoUtenti = new HashMap<>();
+        this.elencoViaggiEffettuati= new HashMap<>();
         this.v= null;
         this.viaggioSelezionato=null;
         this.p=null;
@@ -25,14 +27,15 @@ public class TripSync {
     }
 
     public void loadUtenti(){
-        Partecipante p2=new Partecipante("Barbara");
-        Partecipante p1=new Partecipante("Filippo");
-        Partecipante p3=new Partecipante("Paolo");
+        Partecipante p2=new Partecipante("Barbara", "bf231202");
+        Partecipante p1=new Partecipante("Filippo", "ff270402");
+        Partecipante p3=new Partecipante("Paolo", "pa251002");
 
         this.elencoUtenti.put("Filippo", p1);
         this.elencoUtenti.put("Barbara", p2);
         this.elencoUtenti.put("Paolo", p3);
     }
+
 
 
     public static TripSync getInstance() {
@@ -119,6 +122,9 @@ public class TripSync {
     public void visualizzaItinerario() {
         viaggioSelezionato.visualizzaItinerario();
     }
+
+
+
 
 
 }

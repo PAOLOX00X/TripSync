@@ -6,6 +6,8 @@ public class Tappa {
     private String fine;     // idem
     private double costo;
 
+
+
     public Tappa(String luogo, String inizio, String fine, double costo) {
         this.luogo = luogo;
         this.inizio = inizio;
@@ -27,5 +29,22 @@ public class Tappa {
 
     public double getCosto() {
         return costo;
+    }
+
+
+    public void setLuogo(String luogo) {
+        this.luogo = luogo;
+    }
+
+    public void setInizio(String inizio) {
+        this.inizio = inizio;
+    }
+
+    public void setFine(String fine) {
+        this.fine = fine;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
     }
 }
