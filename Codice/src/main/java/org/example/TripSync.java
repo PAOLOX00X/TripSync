@@ -1,7 +1,5 @@
 package org.example;
 
-import javax.naming.PartialResultException;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,13 +8,13 @@ public class TripSync {
     private static TripSync instance = null;
     private Map<Integer, Viaggio> elencoViaggi;
     private Map<String, Partecipante> elencoUtenti;
-    private Viaggio v;
-    private Viaggio viaggioSelezionato;
-    private Partecipante p;
-    private Feedback f;
-    private Tappa t;
-    private ViaggioEffettuato ve;
     private Map<Integer, ViaggioEffettuato> elencoViaggiEffettuati;
+
+    private Viaggio viaggioCorrente;
+    private Partecipante partecipanteSelezionato;
+    private Feedback feedbackCorrente;
+    private Tappa tappaSelezionata;
+    private ViaggioEffettuato viaggioEffettuatoSelezionato;
 
 
 
@@ -37,6 +35,9 @@ public class TripSync {
         this.elencoUtenti.put("Filippo", p2);
         this.elencoUtenti.put("Barbara", p1);
         this.elencoUtenti.put("Paolo", p3);
+
+        System.out.println("Utenti caricati con successo");
+
     }
 
     public void loadViaggiEffettuati(){
@@ -90,9 +91,6 @@ public class TripSync {
         ve3.getElencoPartecipanti().put("Filippo", p2);
 
 
-
-
-
         elencoViaggiEffettuati.put(001, ve1);
         elencoViaggiEffettuati.put(002, ve2);
         elencoViaggiEffettuati.put(003, ve3);
@@ -110,43 +108,39 @@ public class TripSync {
         return instance;
     }
 
+    public void reset() {
+        this.elencoViaggi.clear();
+        this.elencoUtenti.clear();
+        this.elencoViaggiEffettuati.clear();
+
+
+        this.viaggioCorrente = null;
+        this.partecipanteSelezionato = null;
+        this.feedbackCorrente = null;
+        this.tappaSelezionata = null;
+        this.viaggioEffettuatoSelezionato = null;
+
+
+        loadUtenti();
+        loadViaggiEffettuati();
+    }
+
     public Map<Integer, Viaggio> getElencoViaggi() {
         return elencoViaggi;
     }
 
-    public Viaggio getV() {
-        return v;
+    public Viaggio getViaggioCorrente() {
+        return viaggioCorrente;
     }
-
 
     public Map<String, Partecipante> getElencoUtenti() {
         return elencoUtenti;
     }
 
-    public Partecipante getP() {
-        return p;
+    public ViaggioEffettuato getViaggioEffettuatoSelezionato() {
+        return viaggioEffettuatoSelezionato;
     }
 
-    public Viaggio getViaggioSelezionato() {
-        return viaggioSelezionato;
-    }
-
-
-    public Tappa getT() {
-        return t;
-    }
-
-    public ViaggioEffettuato getVe() {
-        return ve;
-    }
-
-    public Feedback getF() {
-        return f;
-    }
-
-    public Map<Integer, ViaggioEffettuato> getElencoViaggiEffettuati() {
-        return elencoViaggiEffettuati;
-    }
 
     public void creaViaggio(int codice, String partenza, String destinazione) {
         if(elencoViaggi.containsKey(codice)==true){
@@ -154,32 +148,34 @@ public class TripSync {
 
         }
         else{
-            v= new Viaggio(codice, partenza, destinazione);
+            viaggioCorrente= new Viaggio(codice, partenza, destinazione);
             System.out.println("Viaggio creato correttamente");
         }
 
     }
 
     public void aggiungiMezzo(String nome, double costo) {
-        v.aggiungiMezzo(nome, costo);
+
+        viaggioCorrente.aggiungiMezzo(nome, costo);
     }
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
-        v.aggiungiTappa(luogo, inizio, fine, costo);
+        viaggioCorrente.aggiungiTappa(luogo, inizio, fine, costo);
     }
 
     public void confermaInserimento() {
-        Integer codice=v.getCodice();
-        elencoViaggi.put(codice, v);
+        Integer codice=viaggioCorrente.getCodice();
+        elencoViaggi.put(codice, viaggioCorrente);
         System.out.println("Viaggio aggiunto correttamente all'elenco");
+        viaggioCorrente=null;
     }
 
 
     public Viaggio selezionaViaggio(int codice) {
 
         if(elencoViaggi.containsKey(codice)==true){
-            viaggioSelezionato= elencoViaggi.get(codice);
-            return viaggioSelezionato;
+            viaggioCorrente= elencoViaggi.get(codice);
+            return viaggioCorrente;
         }
         else return null;
     }
@@ -187,61 +183,65 @@ public class TripSync {
     public Partecipante inserisciPartecipante(String nomeUtente) {
 
         if(elencoUtenti.containsKey(nomeUtente)==true){
-            p= elencoUtenti.get(nomeUtente);
-            return p;
+            partecipanteSelezionato= elencoUtenti.get(nomeUtente);
+            return partecipanteSelezionato;
         }
         else return null;
     }
 
     public void confermaPartecipante() {
-        String nomeUtente=p.getNomeUtente();
-        viaggioSelezionato.confermaPartecipante(nomeUtente, p);
+        String nomeUtente=partecipanteSelezionato.getNomeUtente();
+        viaggioCorrente.confermaPartecipante(nomeUtente, partecipanteSelezionato);
     }
 
 
 
     public void visualizzaItinerario() {
-        viaggioSelezionato.visualizzaItinerario();
+
+        viaggioCorrente.visualizzaItinerario();
     }
 
 
-    public Tappa SelezionaTappa(String Luogo, String Inizio, String Fine, double Costo){
-        t=v.SelezionaTappa(Luogo, Inizio, Fine, Costo);
-        return t;
+    public Tappa selezionaTappa(String luogo, String inizio, String fine, double costo){
+        tappaSelezionata=viaggioCorrente.selezionaTappa(luogo, inizio, fine, costo);
+
+        return tappaSelezionata;
     }
 
-    public void ModificaTappa(String Luogo, String Inizio, String Fine, double Costo){
-        v.ModificaTappa(t, Luogo, Inizio, Fine, Costo);
+    public void modificaTappa(String luogo, String inizio, String fine, double costo){
+        viaggioCorrente.modificaTappa(tappaSelezionata, luogo, inizio, fine, costo);
     }
 
-    public void EliminaTappa(){
-        v.EliminaTappa(t);
+    public void eliminaTappa(){
+        viaggioCorrente.eliminaTappa(tappaSelezionata);
     }
 
-
-    public ViaggioEffettuato SelezionaViaggioEffettuato(Integer codice){
-        ve=elencoViaggiEffettuati.get(codice);
-        return ve;
+    public ViaggioEffettuato selezionaViaggioEffettuato(Integer codice){
+        if(elencoViaggiEffettuati.containsKey(codice)==true){
+            viaggioEffettuatoSelezionato= elencoViaggiEffettuati.get(codice);
+            return viaggioEffettuatoSelezionato;
+        }
+        else return null;
     }
 
-    public Partecipante InserisciCredenziali(String nomeUtente, String Password){
-        p=ve.getElencoPartecipanti().get(nomeUtente);
-        if (p != null && p.getPassword().equals(Password)) {
+    public Partecipante inserisciCredenziali(String nomeUtente, String password){
+        partecipanteSelezionato=viaggioEffettuatoSelezionato.getElencoPartecipanti().get(nomeUtente);
+        if (partecipanteSelezionato != null && partecipanteSelezionato.getPassword().equals(password)) {
 
-            return p;
+            return partecipanteSelezionato;
         } else {
             System.out.println("Credenziali non valide o partecipante non trovato.");
             return null;
         }
     }
 
-    public Feedback InsersciFeedback(Integer numStelle, String Descrizione){
-        f=p.InserisciFeedback(numStelle, Descrizione);
-        return f;
+    public Feedback inserisciFeedback(Integer numeroStelle, String descrizione){
+        feedbackCorrente=partecipanteSelezionato.inserisciFeedback(numeroStelle, descrizione);
+        return feedbackCorrente;
     }
 
-    public  void ConfermaFeedback(){
-        ve.ConfermaFeedback(f);
+    public  void confermaFeedback(){
+        viaggioEffettuatoSelezionato.confermaFeedback(feedbackCorrente);
     }
 
 

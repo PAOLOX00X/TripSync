@@ -16,11 +16,12 @@ public class MezzoTrasporto {
     public double getCosto() {
         return costo;
     }
-}
 
-// ciao Filippo
-// ciao
-// mezzo inserit
-//aggiungere condizione tappa
-//Barbara Fantastica
-//s
+    @Override
+    public String toString() {
+        return "MezzoTrasporto{" +
+                "nome='" + nome + '\'' +
+                ", costo=" + costo +
+                '}';
+    }
+}

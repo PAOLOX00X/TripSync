@@ -44,4 +44,14 @@ public class Tappa {
     public void setCosto(double costo) {
         this.costo = costo;
     }
+
+    @Override
+    public String toString() {
+        return "Tappa{" +
+                "luogo='" + luogo + '\'' +
+                ", inizio='" + inizio + '\'' +
+                ", fine='" + fine + '\'' +
+                ", costo=" + costo +
+                '}';
+    }
 }

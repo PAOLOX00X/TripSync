@@ -3,6 +3,8 @@ public class Partecipante {
 
     private String nomeUtente;
     private String password;
+    private Feedback feedbackCorrente;
+
     public Partecipante(String nomeUtente, String password) {
 
         this.nomeUtente = nomeUtente;
@@ -10,6 +12,7 @@ public class Partecipante {
     }
 
     public String getNomeUtente() {
+
         return nomeUtente;
     }
 
@@ -17,10 +20,10 @@ public class Partecipante {
         return password;
     }
 
-    public Feedback InserisciFeedback(Integer numStelle, String Descrizione){
-        if(numStelle>=0 && numStelle<=5){
-            Feedback f= new Feedback(numStelle, Descrizione);
-            return f;
+    public Feedback inserisciFeedback(Integer numeroStelle, String descrizione){
+        if(numeroStelle>=0 && numeroStelle<=5){
+            feedbackCorrente= new Feedback(numeroStelle, descrizione);
+            return feedbackCorrente;
         }
         return null;
     }

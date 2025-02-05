@@ -29,6 +29,6 @@ class ViaggioEffettuatoTest {
     public void ConfermaFeedback(){
 
         Feedback f=new Feedback(5, "Ottimo viaggio");
-        ve1.ConfermaFeedback(f);
+        ve1.confermaFeedback(f);
     }
 }

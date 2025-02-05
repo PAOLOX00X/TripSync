@@ -25,9 +25,11 @@ class PartecipanteTest {
 
     @Test
     public void TestInserisciFeedback(){
-        assertNotNull(p.InserisciFeedback(5, "ottimo viaggio"));
+        assertNotNull(p.inserisciFeedback(5, "ottimo viaggio"));
 
-        assertNull(p.InserisciFeedback(6, "ciao"));
+
+        //L'operazione restituisce un valore nullo perchè il numero di stelle è maggiore di 5
+        assertNull(p.inserisciFeedback(6, "ciao"));
     }
 
 }

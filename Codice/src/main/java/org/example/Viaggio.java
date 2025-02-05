@@ -16,8 +16,7 @@ public class Viaggio {
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
 
-    private Tappa t;
-    private Partecipante p;
+
 
     public int getCodice() {
         return codice;
@@ -43,9 +42,6 @@ public class Viaggio {
         return elencoPartecipanti;
     }
 
-    public Tappa getT() {
-        return t;
-    }
 
     public Viaggio(int codice, String partenza, String destinazione) {
         this.codice = codice;
@@ -64,7 +60,7 @@ public class Viaggio {
         System.out.println("Aggiunto il mezzo all'elenco ");
     }
 
-    public Integer verificaTappa(String luogo,String inizio,String fine,double costo){
+    public Integer verificaTappa(String inizio,String fine){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
         LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
@@ -91,8 +87,8 @@ public class Viaggio {
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
 
-        if(verificaTappa(luogo, inizio, fine, costo)==0){
-            System.out.println("Errore! tappa non aggiunta");
+        if(verificaTappa(inizio, fine)==0){
+            System.out.println("Errore! Impossibile aggiungere la tappa");
         }
         else{
             Tappa t=new Tappa(luogo, inizio, fine, costo);
@@ -121,14 +117,14 @@ public class Viaggio {
         }
     }
 
-    public Tappa SelezionaTappa(String Luogo, String Inizio, String Fine, double Costo){
+    public Tappa selezionaTappa(String luogo, String inizio, String fine, double costo){
 
 
             for (Tappa t: elencoTappe) {
-                if (t.getLuogo().equals(Luogo)
-                        && t.getInizio().equals(Inizio)
-                        && t.getFine().equals(Fine)
-                        && t.getCosto() == Costo) {
+                if (t.getLuogo().equals(luogo)
+                        && t.getInizio().equals(inizio)
+                        && t.getFine().equals(fine)
+                        && t.getCosto() == costo) {
 
 
                     return t;
@@ -138,22 +134,22 @@ public class Viaggio {
             return null;
     }
 
-    public void ModificaTappa(Tappa t, String Luogo, String Inizio, String Fine, double Costo){
+    public void modificaTappa(Tappa t, String luogo, String inizio, String fine, double costo){
         int i=elencoTappe.indexOf(t);
-        if(verificaTappa(Luogo, Inizio, Fine, Costo)==0){
+        if(verificaTappa(inizio, fine)==0){
             System.out.println("Errore! impossibile modificare la tappa!");
         }
         else{
-            elencoTappe.get(i).setLuogo(Inizio);
-            elencoTappe.get(i).setInizio(Inizio);
-            elencoTappe.get(i).setFine(Fine);
-            elencoTappe.get(i).setCosto(Costo);
+            elencoTappe.get(i).setLuogo(luogo);
+            elencoTappe.get(i).setInizio(inizio);
+            elencoTappe.get(i).setFine(fine);
+            elencoTappe.get(i).setCosto(costo);
             System.out.println("Modifica effettuata con successo!");
         }
 
     }
 
-    public void EliminaTappa(Tappa t){
+    public void eliminaTappa(Tappa t){
         elencoTappe.remove(t);
         System.out.println("Rimozione avvenuta con successo");
     }

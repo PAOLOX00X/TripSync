@@ -55,10 +55,10 @@ public class ViaggioTest {
     public void TestSelezionaTappa(){
         Viaggio v=new Viaggio(1, "Roma", "Parigi");
         v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
-        assertNotNull(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+        assertNotNull(v.selezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
 
         //l'operazione ritorna un valore nullo perchè la tappa non esiste
-        assertNull(v.SelezionaTappa("Piazza plebiscito", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+        assertNull(v.selezionaTappa("Piazza plebiscito", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
 
     }
 
@@ -68,10 +68,10 @@ public class ViaggioTest {
         Viaggio v=new Viaggio(1, "Roma", "Parigi");
         v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
 
-        v.EliminaTappa(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+        v.eliminaTappa(v.selezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
 
         //L'operazione ritorna un valore nullo perchè la tappa non esiste più
-        assertNull(v.SelezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+        assertNull(v.selezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
 
     }
 
