@@ -21,6 +21,15 @@ public class ViaggioEffettuato extends Viaggio{
         elencoFeedback.add(f);
         System.out.println("Feedback aggiunto correttamente");
     }
+    @Override
+    public void visualizzaItinerario() {
+        super.visualizzaItinerario();
+        for(int i=0;i<elencoFeedback.size();i++){
+            Feedback f=elencoFeedback.get(i);
+            System.out.println("NumStelle: "+f.getNumeroStelle()+" descrizione: "+f.getDescrizione());
+        }
+
+    }
 
 
 }

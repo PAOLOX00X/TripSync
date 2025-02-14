@@ -9,6 +9,15 @@ public class Feedback {
         this.descrizione= descrizione;
     }
 
+    public int getNumeroStelle() {
+        return numeroStelle;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+
 
     @Override
     public String toString() {

@@ -1,5 +1,4 @@
 package org.example;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ public class Viaggio {
     private List<MezzoTrasporto> elencoMezzi;
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
+    private GestorePartecipazioni gestore;
 
 
 
@@ -42,6 +42,10 @@ public class Viaggio {
         return elencoPartecipanti;
     }
 
+    public GestorePartecipazioni getGestore() {
+        return gestore;
+    }
+
 
     public Viaggio(int codice, String partenza, String destinazione) {
         this.codice = codice;
@@ -50,6 +54,8 @@ public class Viaggio {
         this.elencoMezzi = new ArrayList<>();
         this.elencoTappe = new ArrayList<>();
         this.elencoPartecipanti = new HashMap<>();
+        this.gestore=new GestorePartecipazioni();
+
     }
 
 
@@ -86,15 +92,16 @@ public class Viaggio {
 
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
-
-        if(verificaTappa(inizio, fine)==0){
-            System.out.println("Errore! Impossibile aggiungere la tappa");
-        }
-        else{
+        if(verificaTappa(inizio, fine)!=0){
             Tappa t=new Tappa(luogo, inizio, fine, costo);
             elencoTappe.add(t);
             System.out.println("Tappa aggiunta correttamente all'elenco");
+
         }
+        else{
+            System.out.println("Errore! Impossibile aggiungere la tappa");
+        }
+
 
     }
 
@@ -105,6 +112,9 @@ public class Viaggio {
             else {
                 elencoPartecipanti.put(nomeUtente, p);
                 System.out.println("Partecipante aggiunto correttamente all'elenco ");
+                Map<String, StatoPartecipazione> elencoPartecipazioni=gestore.getElencoPartecipazioni();
+                StatoInAttesa st=new StatoInAttesa();
+                elencoPartecipazioni.put(nomeUtente, st);
             }
     }
 
@@ -120,14 +130,14 @@ public class Viaggio {
     public Tappa selezionaTappa(String luogo, String inizio, String fine, double costo){
 
 
-            for (Tappa t: elencoTappe) {
-                if (t.getLuogo().equals(luogo)
-                        && t.getInizio().equals(inizio)
-                        && t.getFine().equals(fine)
-                        && t.getCosto() == costo) {
+            for (Tappa tappaSelezionata: elencoTappe) {
+                if (tappaSelezionata.getLuogo().equals(luogo)
+                        && tappaSelezionata.getInizio().equals(inizio)
+                        && tappaSelezionata.getFine().equals(fine)
+                        && tappaSelezionata.getCosto() == costo) {
 
 
-                    return t;
+                    return tappaSelezionata;
                 }
             }
 
@@ -136,15 +146,16 @@ public class Viaggio {
 
     public void modificaTappa(Tappa t, String luogo, String inizio, String fine, double costo){
         int i=elencoTappe.indexOf(t);
-        if(verificaTappa(inizio, fine)==0){
-            System.out.println("Errore! impossibile modificare la tappa!");
-        }
-        else{
+        if(verificaTappa(inizio, fine)!=0){
             elencoTappe.get(i).setLuogo(luogo);
             elencoTappe.get(i).setInizio(inizio);
             elencoTappe.get(i).setFine(fine);
             elencoTappe.get(i).setCosto(costo);
             System.out.println("Modifica effettuata con successo!");
+        }
+        else{
+            System.out.println("Errore! impossibile modificare la tappa!");
+
         }
 
     }
@@ -152,6 +163,16 @@ public class Viaggio {
     public void eliminaTappa(Tappa t){
         elencoTappe.remove(t);
         System.out.println("Rimozione avvenuta con successo");
+    }
+
+    public void confermaPartecipazione(String nomeUtente){
+        gestore.confermaPartecipazione(nomeUtente);
+    }
+
+    public void annullaPartecipazione(String nomeUtente){
+        gestore.annullaPartecipazione(nomeUtente);
+
+
     }
 
 

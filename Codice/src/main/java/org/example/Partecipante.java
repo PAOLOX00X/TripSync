@@ -6,13 +6,11 @@ public class Partecipante {
     private Feedback feedbackCorrente;
 
     public Partecipante(String nomeUtente, String password) {
-
         this.nomeUtente = nomeUtente;
         this.password= password;
     }
 
     public String getNomeUtente() {
-
         return nomeUtente;
     }
 

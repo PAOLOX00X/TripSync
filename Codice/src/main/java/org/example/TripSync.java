@@ -1,5 +1,4 @@
 package org.example;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ public class TripSync {
     private Map<Integer, Viaggio> elencoViaggi;
     private Map<String, Partecipante> elencoUtenti;
     private Map<Integer, ViaggioEffettuato> elencoViaggiEffettuati;
-
     private Viaggio viaggioCorrente;
     private Partecipante partecipanteSelezionato;
     private Feedback feedbackCorrente;
@@ -22,7 +20,6 @@ public class TripSync {
         this.elencoViaggi = new HashMap<>();
         this.elencoUtenti = new HashMap<>();
         this.elencoViaggiEffettuati=new HashMap<>();
-
         loadUtenti();
         loadViaggiEffettuati();
     }
@@ -41,9 +38,9 @@ public class TripSync {
     }
 
     public void loadViaggiEffettuati(){
-        ViaggioEffettuato ve1=new ViaggioEffettuato(001, "Catania", "Milano" );
-        ViaggioEffettuato ve2=new ViaggioEffettuato(002, "Catania", "Madrid" );
-        ViaggioEffettuato ve3=new ViaggioEffettuato(003, "Palermo", "Torino" );
+        ViaggioEffettuato ve1=new ViaggioEffettuato(1, "Catania", "Milano" );
+        ViaggioEffettuato ve2=new ViaggioEffettuato(2, "Catania", "Madrid" );
+        ViaggioEffettuato ve3=new ViaggioEffettuato(3, "Palermo", "Torino" );
 
         MezzoTrasporto mt1= new MezzoTrasporto("aereo", 120.00);
         MezzoTrasporto mt2= new MezzoTrasporto("aereo", 110.00);
@@ -91,9 +88,9 @@ public class TripSync {
         ve3.getElencoPartecipanti().put("Filippo", p2);
 
 
-        elencoViaggiEffettuati.put(001, ve1);
-        elencoViaggiEffettuati.put(002, ve2);
-        elencoViaggiEffettuati.put(003, ve3);
+        elencoViaggiEffettuati.put(1, ve1);
+        elencoViaggiEffettuati.put(2, ve2);
+        elencoViaggiEffettuati.put(3, ve3);
 
         System.out.println("Viaggi caricati con successo!");
 
@@ -112,15 +109,11 @@ public class TripSync {
         this.elencoViaggi.clear();
         this.elencoUtenti.clear();
         this.elencoViaggiEffettuati.clear();
-
-
         this.viaggioCorrente = null;
         this.partecipanteSelezionato = null;
         this.feedbackCorrente = null;
         this.tappaSelezionata = null;
         this.viaggioEffettuatoSelezionato = null;
-
-
         loadUtenti();
         loadViaggiEffettuati();
     }
@@ -143,7 +136,7 @@ public class TripSync {
 
 
     public void creaViaggio(int codice, String partenza, String destinazione) {
-        if(elencoViaggi.containsKey(codice)==true){
+        if(elencoViaggi.containsKey(codice)){
             System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
 
         }
@@ -173,7 +166,7 @@ public class TripSync {
 
     public Viaggio selezionaViaggio(int codice) {
 
-        if(elencoViaggi.containsKey(codice)==true){
+        if(elencoViaggi.containsKey(codice)){
             viaggioCorrente= elencoViaggi.get(codice);
             return viaggioCorrente;
         }
@@ -182,7 +175,7 @@ public class TripSync {
 
     public Partecipante inserisciPartecipante(String nomeUtente) {
 
-        if(elencoUtenti.containsKey(nomeUtente)==true){
+        if(elencoUtenti.containsKey(nomeUtente)){
             partecipanteSelezionato= elencoUtenti.get(nomeUtente);
             return partecipanteSelezionato;
         }
@@ -217,17 +210,23 @@ public class TripSync {
     }
 
     public ViaggioEffettuato selezionaViaggioEffettuato(Integer codice){
-        if(elencoViaggiEffettuati.containsKey(codice)==true){
+        if(elencoViaggiEffettuati.containsKey(codice)){
             viaggioEffettuatoSelezionato= elencoViaggiEffettuati.get(codice);
             return viaggioEffettuatoSelezionato;
         }
         else return null;
     }
 
-    public Partecipante inserisciCredenziali(String nomeUtente, String password){
-        partecipanteSelezionato=viaggioEffettuatoSelezionato.getElencoPartecipanti().get(nomeUtente);
+    public Partecipante inserisciCredenziali(String nomeUtente, String password, String contesto){
+        if(contesto.equals("effettuato")){
+            Map<String, Partecipante> elencoPartecipanti=viaggioEffettuatoSelezionato.getElencoPartecipanti();
+            partecipanteSelezionato=elencoPartecipanti.get(nomeUtente);
+        }
+        else if(contesto.equals("corrente")){
+            Map<String, Partecipante> elencoPartecipanti=viaggioCorrente.getElencoPartecipanti();
+            partecipanteSelezionato=elencoPartecipanti.get(nomeUtente);
+        }
         if (partecipanteSelezionato != null && partecipanteSelezionato.getPassword().equals(password)) {
-
             return partecipanteSelezionato;
         } else {
             System.out.println("Credenziali non valide o partecipante non trovato.");
@@ -249,5 +248,13 @@ public class TripSync {
         viaggioEffettuatoSelezionato.visualizzaItinerario();
     }
 
+    public void confermaPartecipazione(String nomeUtente){
+        viaggioCorrente.confermaPartecipazione(nomeUtente);
+    }
+
+    public void annullaPartecipazione(String nomeUtente){
+        viaggioCorrente.annullaPartecipazione(nomeUtente);
+
+    }
 
 }
