@@ -245,6 +245,9 @@ public class TripSync {
     }
 
 
+    public void visualizzaItinerarioPassato(){
+        viaggioEffettuatoSelezionato.visualizzaItinerario();
+    }
 
 
 }
