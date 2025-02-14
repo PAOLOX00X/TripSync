@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,8 +21,8 @@ public class TripSyncTest {
         tripSync.reset();
     }
 
-    @AfterAll
-    public static void tearDown(){
+    @AfterEach
+    public void tearDown(){
         tripSync=null;
     }
     @Test
@@ -63,7 +64,7 @@ public class TripSyncTest {
         tripSync.creaViaggio(1,"Catania", "Napoli");
         tripSync.confermaInserimento();
         assertEquals(1, tripSync.getElencoViaggi().size());
-        assertNotNull(tripSync.getElencoViaggi().get(001));
+        assertNotNull(tripSync.getElencoViaggi().get(1));
 
 
         //La seguente operazione non va a buon fine perchè il viaggio esiste già
@@ -126,7 +127,7 @@ public class TripSyncTest {
 
         assertNotNull(tripSync.selezionaViaggio(3));
         assertNotNull(tripSync.selezionaTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
-        System.out.println(tripSync.getViaggioCorrente().getElencoTappe().get(0));
+
 
         //L'operazione restituisce un valore nullo perchè la tappa non esiste
         assertNull(tripSync.selezionaTappa("Castello di Paterno", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
@@ -136,11 +137,11 @@ public class TripSyncTest {
 
     @Test
     public void TestModificaTappa(){
-        tripSync.creaViaggio(001,"Catania", "Milano");
+        tripSync.creaViaggio(1,"Catania", "Milano");
         tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
 
-        assertNotNull(tripSync.selezionaViaggio(001));
+        assertNotNull(tripSync.selezionaViaggio(1));
         assertNotNull(tripSync.selezionaTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
 
         tripSync.modificaTappa("Duomo di Milano", "2025-06-25 16:00", "2025-06-25 18:00", 35.00);
@@ -152,11 +153,11 @@ public class TripSyncTest {
 
     @Test
     public void TestEliminaTappa(){
-        tripSync.creaViaggio(001,"Catania", "Milano");
+        tripSync.creaViaggio(1,"Catania", "Milano");
         tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
 
-        assertNotNull(tripSync.selezionaViaggio(001));
+        assertNotNull(tripSync.selezionaViaggio(1));
 
         assertNotNull(tripSync.selezionaTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
 
@@ -167,10 +168,10 @@ public class TripSyncTest {
 
     @Test
     public void TestSelezionaViaggioEffettuato(){
-        assertNotNull(tripSync.selezionaViaggioEffettuato(001));
+        assertNotNull(tripSync.selezionaViaggioEffettuato(1));
 
         //l'operazione restituisce un valore null perchè il viaggio non esiste
-        assertNull(tripSync.selezionaViaggioEffettuato(005));
+        assertNull(tripSync.selezionaViaggioEffettuato(5));
 
     }
 
@@ -178,26 +179,23 @@ public class TripSyncTest {
     public void TestInserisciCredenziali(){
 
 
-        assertNotNull(tripSync.selezionaViaggioEffettuato(002));
-        System.out.println("Viaggio selezionato: " + tripSync.getViaggioEffettuatoSelezionato().getCodice());
-        System.out.println("Partecipanti del viaggio selezionato: " + tripSync.getViaggioEffettuatoSelezionato().getElencoPartecipanti());
-        assertNotNull(tripSync.inserisciCredenziali("Barbara", "bf231202"));
+        assertNotNull(tripSync.selezionaViaggioEffettuato(2));
+        assertNotNull(tripSync.inserisciCredenziali("Barbara", "bf231202", "effettuato"));
 
         //l'operazione restituisce un valore nullo perchè il partecipante non fa parte del viaggio
-        assertNull(tripSync.inserisciCredenziali("Filippo", "ff270402"));
+        assertNull(tripSync.inserisciCredenziali("Filippo", "ff270402", "effettuato"));
 
         //l'operazione restituisce un valore nullo perchè le credenziali non sono valide
-        assertNull(tripSync.inserisciCredenziali("Barbara", "sslv3"));
+        assertNull(tripSync.inserisciCredenziali("Barbara", "sslv3", "effettuato"));
 
     }
 
     @Test
     public void TestInserisciFeedback(){
-        assertNotNull(tripSync.selezionaViaggioEffettuato(003));
-        assertNotNull(tripSync.inserisciCredenziali("Filippo", "ff270402"));
+        assertNotNull(tripSync.selezionaViaggioEffettuato(3));
+        assertNotNull(tripSync.inserisciCredenziali("Filippo", "ff270402", "effettuato"));
         assertNotNull(tripSync.inserisciFeedback(5, "viaggio molto divertente"));
 
-        System.out.println(tripSync.inserisciFeedback(5, "viaggio molto divertente"));
 
         //L'operazione ritorna null perchè il numero di stelle è insufficiente
         assertNull(tripSync.inserisciFeedback(6, "viaggio non corretto"));
@@ -206,13 +204,69 @@ public class TripSyncTest {
 
     @Test
     public void TestConfermaFeedback(){
-        assertNotNull(tripSync.selezionaViaggioEffettuato(003));
-        assertNotNull(tripSync.inserisciCredenziali("Filippo", "ff270402"));
+        assertNotNull(tripSync.selezionaViaggioEffettuato(3));
+        assertNotNull(tripSync.inserisciCredenziali("Filippo", "ff270402", "effettuato"));
         assertNotNull(tripSync.inserisciFeedback(5, "viaggio molto divertente"));
 
         tripSync.confermaFeedback();
     }
 
+    @Test
+    public void TestVisualizzaItinerarioPassato(){
+
+        assertNotNull(tripSync.selezionaViaggioEffettuato(1));
+        assertNotNull(tripSync.inserisciCredenziali("Filippo", "ff270402","effettuato"));
+        assertNotNull(tripSync.inserisciFeedback(5,"Bel viaggio"));
+        tripSync.confermaFeedback();
+
+        assertNotNull(tripSync.selezionaViaggioEffettuato(1));
+        tripSync.visualizzaItinerarioPassato();
+    }
+
+    @Test
+    public void TestConfermaPartecipazione(){
+
+        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.confermaInserimento();
+        assertNotNull(tripSync.selezionaViaggio(2));
+        assertNotNull(tripSync.inserisciPartecipante("Barbara"));
+        tripSync.confermaPartecipante();
+        assertNotNull(tripSync.getViaggioCorrente().getGestore().getElencoPartecipazioni().get("Barbara"));
+
+        tripSync.confermaPartecipazione("Barbara");
+        //se proviamo a confermare una seconda volta, il sistema notifica la conferma già avvenuta
+        tripSync.confermaPartecipazione("Barbara");
+        //se proviamo a riconfermare la partecipazione, il sistema da errore, come previsto dalle estensioni
+        tripSync.annullaPartecipazione("Barbara");
+        //se proviamo un utente che non partecipa al viaggio, verrà segnalato un opportuno messaggio di errore
+        tripSync.confermaPartecipazione("Filippo");
+
+    }
+
+
+    @Test
+    public void TestAnnullaPartecipazione(){
+
+        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.confermaInserimento();
+        assertNotNull(tripSync.selezionaViaggio(2));
+        assertNotNull(tripSync.inserisciPartecipante("Barbara"));
+        tripSync.confermaPartecipante();
+        assertNotNull(tripSync.getViaggioCorrente().getGestore().getElencoPartecipazioni().get("Barbara"));
+
+        tripSync.annullaPartecipazione("Barbara");
+
+        //se proviamo ad annullare una seconda volta, il sistema notifica che l'annullamento è già avvenuto
+        tripSync.annullaPartecipazione("Barbara");
+
+        //se proviamo a confermare la partecipazione, il sistema da errore, come previsto dalle estensioni
+        tripSync.confermaPartecipazione("Barbara");
+
+        //se proviamo un utente che non partecipa al viaggio, verrà segnalato un opportuno messaggio di errore
+        tripSync.confermaPartecipazione("Filippo");
+
+
+    }
 
 
 }

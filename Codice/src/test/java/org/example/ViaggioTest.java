@@ -75,6 +75,44 @@ public class ViaggioTest {
 
     }
 
+    @Test
+    public void TestConfermaPartecipazione(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202");
+        v.confermaPartecipante("Barbara", p1);
+        v.confermaPartecipazione("Barbara");
+
+        //se proviamo a confermare una seconda volta, il sistema notifica la conferma già avvenuta
+        v.confermaPartecipazione("Barbara");
+        //se proviamo a riconfermare la partecipazione, il sistema da errore, come previsto dalle estensioni
+        v.annullaPartecipazione("Barbara");
+        //se proviamo un utente che non partecipa al viaggio, verrà segnalato un opportuno messaggio di errore
+        v.confermaPartecipazione("Filippo");
+
+
+    }
+
+    @Test
+    public void TestAnnullaPartecipazione(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202");
+        v.confermaPartecipante("Barbara", p1);
+        v.annullaPartecipazione("Barbara");
+
+        //se proviamo ad annullare una seconda volta, il sistema notifica che l'annullamento è già avvenuto
+        v.annullaPartecipazione("Barbara");
+
+        //se proviamo a confermare la partecipazione, il sistema da errore, come previsto dalle estensioni
+        v.confermaPartecipazione("Barbara");
+
+        //se proviamo un utente che non partecipa al viaggio, verrà segnalato un opportuno messaggio di errore
+        v.confermaPartecipazione("Filippo");
+
+
+    }
+
+
+
 
 
 }
