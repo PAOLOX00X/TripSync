@@ -5,4 +5,5 @@ public class AumentoFestivita implements Strategy{
     public double calcolaCostoAggiornato(double costo) {
         return costo*1.2;
     }
+
 }

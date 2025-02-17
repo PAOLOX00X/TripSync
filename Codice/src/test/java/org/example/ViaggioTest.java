@@ -18,7 +18,7 @@ public class ViaggioTest {
     @Test
     public void TestAggiungiTappa(){
         Viaggio v=new Viaggio(2, "Catania", "Napoli", "2025-06-19", "2025-06-23");
-        v.aggiungiTappa("Piazza garibaldi", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
+        v.aggiungiTappa("Piazza garibaldi", "2025-06-20 10:30", "2025-06-20 12:30", 23.00);
         assertEquals("Piazza garibaldi", v.getElencoTappe().get(0).getLuogo());
 
         //Le seguenti operazioni non vanno a buon fine in quanto in una gli orari sono gli stessi e nell'altra
@@ -111,8 +111,26 @@ public class ViaggioTest {
 
     }
 
+    @Test
+    public void TestVerificaFestivita(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-23");
+        assertEquals(false,v.isFestivo("2025-06-19","2025-06-23"));
 
+        assertEquals(true,v.isFestivo("2025-12-19","2025-12-25"));
+        assertEquals(true,v.isFestivo("2025-12-29","2026-01-03"));
+        assertEquals(true,v.isFestivo("2025-08-12","2025-08-16"));
+    }
 
+    @Test
+    public void TestVerificaPartecipante(){
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-23");
 
+        assertEquals(false,v.isMinorenne("2002-04-27"));
+
+        //il partecipante è diventato maggiorenne oggi (test effettuato in data 2025-02-16)
+        assertEquals(false, v.isMinorenne("2007-02-16"));
+
+        assertEquals(true, v.isMinorenne("2008-02-16"));
+    }
 
 }

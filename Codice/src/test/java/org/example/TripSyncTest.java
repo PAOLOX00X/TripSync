@@ -29,6 +29,11 @@ public class TripSyncTest {
     public void testCreaViaggio(){
         tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23");
         assertNotNull(tripSync.getViaggioCorrente());
+
+        //L'operazione non va a buon fine perchè la data di inizio è più antica rispetto alla data odierna
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2024-06-19", "2025-06-23");
+        //L'operazione non va a buon fine perchè la data di fine è più antica rispetto alla data di inizio
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-18");
     }
 
     @Test
@@ -53,6 +58,11 @@ public class TripSyncTest {
         // uguali a quelli di un'altra tappa
         tripSync.aggiungiTappa("Campo dei fiori", "2025-06-25 10:00", "2025-06-25 10:00", 0.00);
         tripSync.aggiungiTappa("Fontana di trevi", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
+
+        //Le seguenti operazioni non vanno a buon fine perchè la data di inizio è più antica della data di inizio del viaggio
+        //e la data di fine è più recente della data di fine del viaggio
+        tripSync.aggiungiTappa("Campo dei fiori", "2025-06-18 10:00", "2025-06-18 12:00", 0.00);
+        tripSync.aggiungiTappa("Campo dei fiori", "2025-06-28 10:00", "2025-06-28 12:00", 0.00);
 
         //ci aspettiamo che la dimensione dell'elenco di tappe rimanga immutata
         assertEquals(2, tripSync.getViaggioCorrente().getElencoTappe().size());
@@ -110,8 +120,8 @@ public class TripSyncTest {
     }
 
     @Test
-    public void TestVisualizzaTappe(){
-        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-06-24", "2025-06-25");
+    public void TestVisualizzaItinerario(){
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-06-19", "2025-06-27");
         tripSync.aggiungiTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(3));
@@ -178,7 +188,6 @@ public class TripSyncTest {
     @Test
     public void TestInserisciCredenziali(){
 
-
         assertNotNull(tripSync.selezionaViaggioEffettuato(2));
         assertNotNull(tripSync.inserisciCredenziali("Barbara", "bf231202", "effettuato"));
 
@@ -226,7 +235,7 @@ public class TripSyncTest {
     @Test
     public void TestConfermaPartecipazione(){
 
-        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-25", "2025-06-26");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-19", "2025-06-23");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));
@@ -247,7 +256,7 @@ public class TripSyncTest {
     @Test
     public void TestAnnullaPartecipazione(){
 
-        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-25", "2025-06-26");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-19", "2025-06-23");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));
@@ -265,6 +274,80 @@ public class TripSyncTest {
         //se proviamo un utente che non partecipa al viaggio, verrà segnalato un opportuno messaggio di errore
         tripSync.confermaPartecipazione("Filippo");
 
+
+    }
+
+    @Test
+    public void TestVerificaCredenziali(){
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-19", "2025-06-23");
+        tripSync.confermaInserimento();
+        assertNotNull(tripSync.selezionaViaggio(2));
+        assertNotNull(tripSync.inserisciPartecipante("Barbara"));
+        tripSync.confermaPartecipante();
+        assertNotNull(tripSync.getViaggioCorrente().getGestore().getElencoPartecipazioni().get("Barbara"));
+
+        assertEquals(true, tripSync.verificaCredenziali("Barbara", "bf231202"));
+        //L'operazione non va a buon fine perchè il partecipante non è associato al viaggio
+        assertEquals(false, tripSync.verificaCredenziali("Filippo", "ff270402"));
+        //L'operazione non va a buon fine perchè le credenziali sono invalide
+        assertEquals(false, tripSync.verificaCredenziali("Barbara", "bf2567"));
+
+        /* La seguente operazione è andata a buon fine, ma è stata commentata per poter applicare tripSync.annullaPartecipazione()
+        tripSync.confermaPartecipazione("Barbara");
+        assertEquals(true, tripSync.verificaCredenziali("Barbara", "bf231202"));
+        */
+
+
+        tripSync.annullaPartecipazione("Barbara");
+        //L'operazione non va a buon fine perchè la partecipazione è stata annullata
+        assertEquals(false, tripSync.verificaCredenziali("Barbara", "bf231202"));
+
+    }
+
+    @Test
+    public void TestCalcolaCosto(){
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-06-19", "2025-06-27");
+        tripSync.aggiungiMezzo("aereo", 156.00);
+        tripSync.aggiungiTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
+        tripSync.confermaInserimento();
+        assertNotNull(tripSync.selezionaViaggio(3));
+
+        //Non viene visualizzato alcun costo, perchè non ci sono partecipanti al viaggio
+        tripSync.calcolaCosto();
+    }
+
+    @Test
+    public void TestCalcolaCostoFestivo(){
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-12-20", "2025-12-30");
+        tripSync.aggiungiMezzo("aereo", 156.00);
+        tripSync.aggiungiTappa("Ristorante Barbieri", "2025-12-23 13:30", "2025-12-23 15:30", 35.00);
+        tripSync.confermaInserimento();
+        assertNotNull(tripSync.selezionaViaggio(3));
+        tripSync.inserisciPartecipante("Filippo");
+        tripSync.confermaPartecipante();
+
+        //è stata applicata correttamente la regola di dominio R3
+        tripSync.calcolaCosto();
+
+    }
+
+    @Test
+    public void TestCalcolaCostoPartecipanteMinorenne(){
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-12-20", "2025-12-30");
+        tripSync.aggiungiMezzo("aereo", 156.00);
+        tripSync.aggiungiTappa("Ristorante Barbieri", "2025-12-23 13:30", "2025-12-23 15:30", 35.00);
+        tripSync.confermaInserimento();
+
+        assertNotNull(tripSync.selezionaViaggio(3));
+        tripSync.inserisciPartecipante("Filippo");
+        tripSync.confermaPartecipante();
+        tripSync.inserisciPartecipante("Federico");
+        tripSync.confermaPartecipante();
+        tripSync.calcolaCosto();
+
+        //Annullando la partecipazione, vengono ricalcolati i costi
+        tripSync.annullaPartecipazione("Filippo");
+        tripSync.calcolaCosto();
 
     }
 
