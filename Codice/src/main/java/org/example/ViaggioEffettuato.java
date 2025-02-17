@@ -1,9 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ViaggioEffettuato extends Viaggio{
 
@@ -24,6 +22,7 @@ public class ViaggioEffettuato extends Viaggio{
     @Override
     public void visualizzaItinerario() {
         super.visualizzaItinerario();
+        System.out.println("Elenco Feedback: ");
         for(int i=0;i<elencoFeedback.size();i++){
             Feedback f=elencoFeedback.get(i);
             System.out.println("NumStelle: "+f.getNumeroStelle()+" descrizione: "+f.getDescrizione());

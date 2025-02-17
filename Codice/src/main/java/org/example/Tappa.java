@@ -2,8 +2,8 @@ package org.example;
 public class Tappa {
 
     private String luogo;
-    private String inizio;   // semplificazione: stringa invece di Date
-    private String fine;     // idem
+    private String inizio;
+    private String fine;
     private double costo;
 
     public Tappa(String luogo, String inizio, String fine, double costo) {

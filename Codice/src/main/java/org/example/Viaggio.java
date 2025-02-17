@@ -1,10 +1,9 @@
 package org.example;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.time.Period;
 
 public class Viaggio {
 
@@ -17,8 +16,7 @@ public class Viaggio {
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
     private GestorePartecipazioni gestore;
-
-
+    private Context context;
 
     public int getCodice() {
         return codice;
@@ -74,6 +72,9 @@ public class Viaggio {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dataInizio = LocalDateTime.parse(inizio, formatter);
         LocalDateTime dataFine = LocalDateTime.parse(fine, formatter);
+        LocalDateTime dataInizioViaggio = LocalDateTime.parse(this.dataInizio + " 00:00", formatter);
+        LocalDateTime dataFineViaggio = LocalDateTime.parse(this.dataFine + " 23:59", formatter);
+
         if(dataInizio.equals(dataFine)){
             System.out.println("Errore: la data di inizio e fine e' la stessa");
             return 0;
@@ -81,6 +82,11 @@ public class Viaggio {
 
         if(dataInizio.isAfter(dataFine)){
             System.out.println("Errore: il software non è una macchina del tempo. Inserire date corrette");
+            return 0;
+        }
+
+        if (dataInizio.isBefore(dataInizioViaggio) || dataFine.isAfter(dataFineViaggio)) {
+            System.out.println("Errore: Le date della tappa devono essere comprese tra " + this.dataInizio + " e " + this.dataFine);
             return 0;
         }
 
@@ -100,13 +106,10 @@ public class Viaggio {
             Tappa t=new Tappa(luogo, inizio, fine, costo);
             elencoTappe.add(t);
             System.out.println("Tappa aggiunta correttamente all'elenco");
-
         }
         else{
             System.out.println("Errore! Impossibile aggiungere la tappa");
         }
-
-
     }
 
     public void confermaPartecipante(String nomeUtente, Partecipante p) {
@@ -125,21 +128,22 @@ public class Viaggio {
 
     public void visualizzaItinerario() {
         System.out.println("Codice: "+getCodice()+" Partenza: "+getPartenza()+" Destinazione: "+getDestinazione());
-        for(int i=0;i<elencoTappe.size();i++){
-            Tappa t=elencoTappe.get(i);
-            System.out.println("Luogo: "+t.getLuogo()+" Inizio: "+t.getInizio()+" Fine: "+t.getFine()+" Costo: "+t.getCosto());
+        System.out.println("Elenco Mezzi:");
+        for(MezzoTrasporto mt: elencoMezzi){
+            System.out.println(mt.toString());
+        }
+        System.out.println("Elenco Tappe:");
+        for(Tappa t: elencoTappe){
+            System.out.println(t.toString());
         }
     }
 
     public Tappa selezionaTappa(String luogo, String inizio, String fine, double costo){
-
-
             for (Tappa tappaSelezionata: elencoTappe) {
                 if (tappaSelezionata.getLuogo().equals(luogo)
                         && tappaSelezionata.getInizio().equals(inizio)
                         && tappaSelezionata.getFine().equals(fine)
                         && tappaSelezionata.getCosto() == costo) {
-
 
                     return tappaSelezionata;
                 }
@@ -175,17 +179,92 @@ public class Viaggio {
 
     public void annullaPartecipazione(String nomeUtente){
         gestore.annullaPartecipazione(nomeUtente);
-
-
     }
 
     public boolean verificaCredenziali(String nomeUtente, String password){
-        return true;
+        Partecipante p=elencoPartecipanti.get(nomeUtente);
+        if(p!=null && p.getPassword().equals(password)){
+            Map<String, StatoPartecipazione> elencoPartecipazioni=gestore.getElencoPartecipazioni();
+            StatoPartecipazione stato=elencoPartecipazioni.get(nomeUtente);
+            if(stato instanceof StatoInAttesa || stato instanceof StatoConfermato){
+                return true;
+            }
+            else return false;
+        }
+        else return false;
     }
 
     public void calcolaCosto() {
+        context = new Context();
+        double costoBase = 0;
+        for (Tappa t : elencoTappe) {
+            costoBase += t.getCosto();
+        }
+        for (MezzoTrasporto mt : elencoMezzi) {
+            costoBase += mt.getCosto();
+        }
+        int numeroPartecipanti = 0;
+        for (Map.Entry<String, StatoPartecipazione> entry : gestore.getElencoPartecipazioni().entrySet()) {
+            if (entry.getValue() instanceof StatoConfermato || entry.getValue() instanceof StatoInAttesa) {
+                numeroPartecipanti++;
+            }
+        }
+        if (numeroPartecipanti == 0) {
+            System.out.println("Non ci sono partecipanti confermati o in attesa.");
+            return;
+        }
+        costoBase=costoBase*numeroPartecipanti;
+        if (isFestivo(dataInizio, dataFine)) {
+            AumentoFestivita au=new AumentoFestivita();
+            context.setStrategy(au);
+            costoBase = context.executeStrategy(costoBase);
+        }
+        double costoPartecipanteMaggiorenne = costoBase / numeroPartecipanti;
+        double costoPartecipanteMinorenne = 0.0;
+        int numeroMinorenni = 0;
+
+        for (Map.Entry<String, StatoPartecipazione> entry : gestore.getElencoPartecipazioni().entrySet()) {
+            if (entry.getValue() instanceof StatoConfermato || entry.getValue() instanceof StatoInAttesa) {
+                Partecipante partecipante = elencoPartecipanti.get(entry.getKey());
+                if (isMinorenne(partecipante.getDataNascita())) {
+                    numeroMinorenni++;
+                    PartecipanteMinorenne pm=new PartecipanteMinorenne();
+                    context.setStrategy(pm);
+                    costoPartecipanteMinorenne = context.executeStrategy(costoPartecipanteMaggiorenne);
+                }
+            }
+        }
+
+        if (numeroMinorenni == 0) {
+            System.out.println("Il costo totale del viaggio è " + costoBase + ". Il costo per un partecipante maggiorenne è " + costoPartecipanteMaggiorenne + ". Non ci sono partecipanti minorenni.");
+        } else {
+            System.out.println("Il costo totale del viaggio è " + costoBase + ". Il costo per un partecipante maggiorenne è " + costoPartecipanteMaggiorenne + ". Il costo per un partecipante minorenne è " + costoPartecipanteMinorenne);
+        }
 
     }
 
+    public boolean isMinorenne(String dataNascita) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dataNascitaDate = LocalDate.parse(dataNascita, formatter);
+        LocalDate oggi = LocalDate.now();
+        Period eta = Period.between(dataNascitaDate, oggi);
+        return eta.getYears() < 18;
+    }
+
+    public boolean isFestivo(String dataInizio, String dataFine) {
+        List<String> festivita = List.of("25-12", "01-01", "15-08");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dataInizioParsed = LocalDate.parse(dataInizio, formatter);
+        LocalDate dataFineParsed = LocalDate.parse(dataFine, formatter);
+        LocalDate currentDate = dataInizioParsed;
+        while (!currentDate.isAfter(dataFineParsed)) {
+            String giornoMese = currentDate.format(DateTimeFormatter.ofPattern("dd-MM"));
+            if (festivita.contains(giornoMese)) {
+                return true;
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+        return false;
+    }
 
 }

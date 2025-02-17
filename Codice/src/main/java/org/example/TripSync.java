@@ -139,7 +139,7 @@ public class TripSync {
         LocalDate dataInizioParsed = LocalDate.parse(dataInizio, formatter);
         LocalDate dataFineParsed = LocalDate.parse(dataFine, formatter);
         LocalDate dataCorrente = LocalDate.now();
-        if(elencoViaggi.containsKey(codice)){
+        if(!elencoViaggi.containsKey(codice)){
             if (!dataInizioParsed.isBefore(dataCorrente)) {
                 if (!dataFineParsed.isBefore(dataInizioParsed)) {
                     viaggioCorrente= new Viaggio(codice, partenza, destinazione, dataInizio, dataFine);
