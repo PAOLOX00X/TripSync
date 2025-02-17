@@ -10,8 +10,8 @@ public class ViaggioEffettuato extends Viaggio{
     private List<Feedback> elencoFeedback;
 
 
-    public ViaggioEffettuato(int codice, String partenza, String destinazione) {
-        super(codice, partenza, destinazione);
+    public ViaggioEffettuato(int codice, String partenza, String destinazione, String dataInizio, String dataFine) {
+        super(codice, partenza, destinazione, dataInizio, dataFine);
 
         this.elencoFeedback=new ArrayList<>();
     }

@@ -27,13 +27,13 @@ public class TripSyncTest {
     }
     @Test
     public void testCreaViaggio(){
-        tripSync.creaViaggio(1,"Catania", "Napoli");
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23");
         assertNotNull(tripSync.getViaggioCorrente());
     }
 
     @Test
     public void TestAggiungiMezzo(){
-        tripSync.creaViaggio(1,"Catania", "Napoli");
+        tripSync.creaViaggio(1,"Catania", "Napoli","2025-06-19", "2025-06-23");
         tripSync.aggiungiMezzo("aereo", 156.00);
         assertNotNull(tripSync.getViaggioCorrente().getElencoMezzi().get(0));
         assertEquals("aereo", tripSync.getViaggioCorrente().getElencoMezzi().get(0).getNome());
@@ -42,7 +42,7 @@ public class TripSyncTest {
 
     @Test
     public void TestInserisciTappa(){
-        tripSync.creaViaggio(1,"Catania", "Napoli");
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-27");
         tripSync.aggiungiTappa("colosseo", "2025-06-25 10:30", "2025-06-25 12:30", 35.00);
         assertNotNull(tripSync.getViaggioCorrente().getElencoTappe().get(0));
 
@@ -61,14 +61,14 @@ public class TripSyncTest {
 
     @Test
     public void TestConfermaInserimento(){
-        tripSync.creaViaggio(1,"Catania", "Napoli");
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23");
         tripSync.confermaInserimento();
         assertEquals(1, tripSync.getElencoViaggi().size());
         assertNotNull(tripSync.getElencoViaggi().get(1));
 
 
         //La seguente operazione non va a buon fine perchè il viaggio esiste già
-        tripSync.creaViaggio(1,"Catania", "Napoli");
+        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23");
 
         //ci si aspetta che la dimensione della mappa rimanga immutata
         assertEquals(1, tripSync.getElencoViaggi().size());
@@ -76,7 +76,7 @@ public class TripSyncTest {
 
     @Test
     public void TestSelezionaViaggio(){
-        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-19", "2025-06-23");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
 
@@ -97,7 +97,7 @@ public class TripSyncTest {
 
     @Test
     public void TestConfermaPartecipante(){
-        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-19", "2025-06-23");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));
@@ -111,7 +111,7 @@ public class TripSyncTest {
 
     @Test
     public void TestVisualizzaTappe(){
-        tripSync.creaViaggio(3,"Firenze", "Bologna");
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-06-24", "2025-06-25");
         tripSync.aggiungiTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(3));
@@ -121,7 +121,7 @@ public class TripSyncTest {
 
     @Test
     public void TestSelezionaTappa(){
-        tripSync.creaViaggio(3,"Firenze", "Bologna");
+        tripSync.creaViaggio(3,"Firenze", "Bologna", "2025-06-24", "2025-06-25");
         tripSync.aggiungiTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
 
@@ -137,7 +137,7 @@ public class TripSyncTest {
 
     @Test
     public void TestModificaTappa(){
-        tripSync.creaViaggio(1,"Catania", "Milano");
+        tripSync.creaViaggio(1,"Catania", "Milano", "2025-06-25", "2025-06-26");
         tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
 
@@ -153,7 +153,7 @@ public class TripSyncTest {
 
     @Test
     public void TestEliminaTappa(){
-        tripSync.creaViaggio(1,"Catania", "Milano");
+        tripSync.creaViaggio(1,"Catania", "Milano", "2025-06-19", "2025-06-26");
         tripSync.aggiungiTappa("Stadio San Siro", "2025-06-25 13:30", "2025-06-25 15:30", 35.00);
         tripSync.confermaInserimento();
 
@@ -226,7 +226,7 @@ public class TripSyncTest {
     @Test
     public void TestConfermaPartecipazione(){
 
-        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-25", "2025-06-26");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));
@@ -247,7 +247,7 @@ public class TripSyncTest {
     @Test
     public void TestAnnullaPartecipazione(){
 
-        tripSync.creaViaggio(2,"Palermo", "Messina");
+        tripSync.creaViaggio(2,"Palermo", "Messina", "2025-06-25", "2025-06-26");
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(2));
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));

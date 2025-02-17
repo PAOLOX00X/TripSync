@@ -11,7 +11,7 @@ class ViaggioEffettuatoTest {
 
     @BeforeAll
     public static void initTest(){
-        ve1=new ViaggioEffettuato(1, "Catania", "Milano" );
+        ve1=new ViaggioEffettuato(1, "Catania", "Milano", "2023-07-07", "2023-07-10" );
 
 
     }

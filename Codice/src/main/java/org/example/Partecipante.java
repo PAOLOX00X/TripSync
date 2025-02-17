@@ -3,11 +3,13 @@ public class Partecipante {
 
     private String nomeUtente;
     private String password;
+    private String dataNascita;
     private Feedback feedbackCorrente;
 
-    public Partecipante(String nomeUtente, String password) {
+    public Partecipante(String nomeUtente, String password, String dataNascita) {
         this.nomeUtente = nomeUtente;
         this.password= password;
+        this.dataNascita=dataNascita;
     }
 
     public String getNomeUtente() {
@@ -17,6 +19,8 @@ public class Partecipante {
     public String getPassword() {
         return password;
     }
+
+    public String getDataNascita() { return dataNascita; }
 
     public Feedback inserisciFeedback(Integer numeroStelle, String descrizione){
         if(numeroStelle>=0 && numeroStelle<=5){

@@ -1,4 +1,6 @@
 package org.example;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +16,6 @@ public class TripSync {
     private Tappa tappaSelezionata;
     private ViaggioEffettuato viaggioEffettuatoSelezionato;
 
-
-
     TripSync() {
         this.elencoViaggi = new HashMap<>();
         this.elencoUtenti = new HashMap<>();
@@ -25,22 +25,25 @@ public class TripSync {
     }
 
     public void loadUtenti(){
-        Partecipante p1=new Partecipante("Barbara", "bf231202");
-        Partecipante p2=new Partecipante("Filippo", "ff270402");
-        Partecipante p3=new Partecipante("Paolo", "pa251002");
+        Partecipante p1=new Partecipante("Barbara", "bf231202", "2002-12-23");
+        Partecipante p2=new Partecipante("Filippo", "ff270402", "2002-04-27");
+        Partecipante p3=new Partecipante("Paolo", "pa251002", "2002-10-25");
+        Partecipante p4=new Partecipante("Federico", "fs240708", "2008-07-24");
+        Partecipante p5=new Partecipante("Beatrice", "bs240708", "2008-07-24");
 
         this.elencoUtenti.put("Filippo", p2);
         this.elencoUtenti.put("Barbara", p1);
         this.elencoUtenti.put("Paolo", p3);
+        this.elencoUtenti.put("Federico", p4);
+        this.elencoUtenti.put("Beatrice", p5);
 
         System.out.println("Utenti caricati con successo");
-
     }
 
     public void loadViaggiEffettuati(){
-        ViaggioEffettuato ve1=new ViaggioEffettuato(1, "Catania", "Milano" );
-        ViaggioEffettuato ve2=new ViaggioEffettuato(2, "Catania", "Madrid" );
-        ViaggioEffettuato ve3=new ViaggioEffettuato(3, "Palermo", "Torino" );
+        ViaggioEffettuato ve1=new ViaggioEffettuato(1, "Catania", "Milano", "2024-06-06", "2024-06-07");
+        ViaggioEffettuato ve2=new ViaggioEffettuato(2, "Catania", "Madrid", "2023-07-07", "2023-07-07");
+        ViaggioEffettuato ve3=new ViaggioEffettuato(3, "Palermo", "Torino", "2024-10-11", "2024-10-12");
 
         MezzoTrasporto mt1= new MezzoTrasporto("aereo", 120.00);
         MezzoTrasporto mt2= new MezzoTrasporto("aereo", 110.00);
@@ -68,32 +71,29 @@ public class TripSync {
         ve3.getElencoTappe().add(t5);
         ve3.getElencoTappe().add(t6);
 
-
         Partecipante p1= elencoUtenti.get("Barbara");
         Partecipante p2= elencoUtenti.get("Filippo");
         Partecipante p3=elencoUtenti.get("Paolo");
+        Partecipante p4=elencoUtenti.get("Federico");
+        Partecipante p5=elencoUtenti.get("Beatrice");
 
         ve1.getElencoPartecipanti().put("Barbara", p1);
         ve1.getElencoPartecipanti().put("Filippo", p2);
         ve1.getElencoPartecipanti().put("Paolo", p3);
 
-
-
         ve2.getElencoPartecipanti().put("Paolo", p3);
         ve2.getElencoPartecipanti().put("Barbara", p1);
-
-
+        ve2.getElencoPartecipanti().put("Beatrice", p5);
 
         ve3.getElencoPartecipanti().put("Paolo", p3);
         ve3.getElencoPartecipanti().put("Filippo", p2);
-
+        ve3.getElencoPartecipanti().put("Federico", p4);
 
         elencoViaggiEffettuati.put(1, ve1);
         elencoViaggiEffettuati.put(2, ve2);
         elencoViaggiEffettuati.put(3, ve3);
 
         System.out.println("Viaggi caricati con successo!");
-
 
     }
 
@@ -134,15 +134,26 @@ public class TripSync {
         return viaggioEffettuatoSelezionato;
     }
 
-
-    public void creaViaggio(int codice, String partenza, String destinazione) {
+    public void creaViaggio(int codice, String partenza, String destinazione, String dataInizio, String dataFine) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dataInizioParsed = LocalDate.parse(dataInizio, formatter);
+        LocalDate dataFineParsed = LocalDate.parse(dataFine, formatter);
+        LocalDate dataCorrente = LocalDate.now();
         if(elencoViaggi.containsKey(codice)){
-            System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
-
+            if (!dataInizioParsed.isBefore(dataCorrente)) {
+                if (!dataFineParsed.isBefore(dataInizioParsed)) {
+                    viaggioCorrente= new Viaggio(codice, partenza, destinazione, dataInizio, dataFine);
+                    System.out.println("Viaggio creato correttamente");
+                }
+                else{
+                    System.out.println("Errore: La data di fine non può essere precedente alla data di inizio.");
+                }
+            }else{
+                System.out.println("Errore: La data di inizio non può essere nel passato.");
+            }
         }
         else{
-            viaggioCorrente= new Viaggio(codice, partenza, destinazione);
-            System.out.println("Viaggio creato correttamente");
+            System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
         }
 
     }
@@ -256,5 +267,16 @@ public class TripSync {
         viaggioCorrente.annullaPartecipazione(nomeUtente);
 
     }
+
+    public boolean verificaCredenziali(String nomeUtente, String password){
+        return viaggioCorrente.verificaCredenziali(nomeUtente,password);
+    }
+
+    public void calcolaCosto(){
+        viaggioCorrente.calcolaCosto();
+    }
+
+
+
 
 }

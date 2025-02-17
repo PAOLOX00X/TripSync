@@ -11,7 +11,7 @@ class PartecipanteTest {
 
     @BeforeAll
     public static void initTest(){
-        p=new Partecipante("Filippo", "ff270402");
+        p=new Partecipante("Filippo", "ff270402", "2002-04-27");
 
 
     }

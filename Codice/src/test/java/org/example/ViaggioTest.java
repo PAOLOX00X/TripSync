@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ViaggioTest {
     @Test
     public void TestAggiungiMezzo(){
-        Viaggio v=new Viaggio(1, "Catania", "Napoli");
+        Viaggio v=new Viaggio(1, "Catania", "Napoli", "2025-06-19", "2025-06-23");
         v.aggiungiMezzo("aereo", 156.00);
         assertNotNull(v.getElencoMezzi().get(0));
     }
 
     @Test
     public void TestAggiungiTappa(){
-        Viaggio v=new Viaggio(2, "Catania", "Napoli");
+        Viaggio v=new Viaggio(2, "Catania", "Napoli", "2025-06-19", "2025-06-23");
         v.aggiungiTappa("Piazza garibaldi", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
         assertEquals("Piazza garibaldi", v.getElencoTappe().get(0).getLuogo());
 
@@ -33,8 +33,8 @@ public class ViaggioTest {
     @Test
     public void TestConfermaPartecipante(){
 
-        Viaggio v=new Viaggio(3, "Firenze", "Bologna");
-        Partecipante p1=new Partecipante("Barbara", "bpf231202");
+        Viaggio v=new Viaggio(3, "Firenze", "Bologna", "2025-06-19", "2025-06-23");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202", "2002-12-23");
         v.confermaPartecipante("Barbara", p1);
         assertEquals("Barbara", v.getElencoPartecipanti().get("Barbara").getNomeUtente());
 
@@ -45,7 +45,7 @@ public class ViaggioTest {
 
     @Test
     public void TestVisualizzaItinerario(){
-        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-06", "2025-06-08");
         v.aggiungiTappa("torre eiffel", "2025-02-07 18:00", "2025-02-07 19:00", 30.00);
         v.aggiungiTappa("Louvre", "2025-02-07 10:00", "2025-02-07 13:00", 15.00);
         v.visualizzaItinerario();
@@ -53,7 +53,7 @@ public class ViaggioTest {
 
     @Test
     public void TestSelezionaTappa(){
-        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-26");
         v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
         assertNotNull(v.selezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
 
@@ -65,7 +65,7 @@ public class ViaggioTest {
 
     @Test
     public void TestEliminaTappa(){
-        Viaggio v=new Viaggio(1, "Roma", "Parigi");
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-23");
         v.aggiungiTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
 
         v.eliminaTappa(v.selezionaTappa("Stadio Maradona", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
@@ -77,8 +77,8 @@ public class ViaggioTest {
 
     @Test
     public void TestConfermaPartecipazione(){
-        Viaggio v=new Viaggio(1, "Roma", "Parigi");
-        Partecipante p1=new Partecipante("Barbara", "bpf231202");
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-23");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202", "2002-12-23");
         v.confermaPartecipante("Barbara", p1);
         v.confermaPartecipazione("Barbara");
 
@@ -94,8 +94,8 @@ public class ViaggioTest {
 
     @Test
     public void TestAnnullaPartecipazione(){
-        Viaggio v=new Viaggio(1, "Roma", "Parigi");
-        Partecipante p1=new Partecipante("Barbara", "bpf231202");
+        Viaggio v=new Viaggio(1, "Roma", "Parigi", "2025-06-19", "2025-06-23");
+        Partecipante p1=new Partecipante("Barbara", "bpf231202", "2002-12-23");
         v.confermaPartecipante("Barbara", p1);
         v.annullaPartecipazione("Barbara");
 

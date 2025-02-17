@@ -11,6 +11,8 @@ public class Viaggio {
     private int codice;
     private String partenza;
     private String destinazione;
+    private String dataInizio;
+    private String dataFine;
     private List<MezzoTrasporto> elencoMezzi;
     private List<Tappa> elencoTappe;
     private Map<String, Partecipante> elencoPartecipanti;
@@ -47,10 +49,12 @@ public class Viaggio {
     }
 
 
-    public Viaggio(int codice, String partenza, String destinazione) {
+    public Viaggio(int codice, String partenza, String destinazione,  String dataInizio, String dataFine) {
         this.codice = codice;
         this.partenza = partenza;
         this.destinazione = destinazione;
+        this.dataInizio=dataInizio;
+        this.dataFine=dataFine;
         this.elencoMezzi = new ArrayList<>();
         this.elencoTappe = new ArrayList<>();
         this.elencoPartecipanti = new HashMap<>();
@@ -172,6 +176,14 @@ public class Viaggio {
     public void annullaPartecipazione(String nomeUtente){
         gestore.annullaPartecipazione(nomeUtente);
 
+
+    }
+
+    public boolean verificaCredenziali(String nomeUtente, String password){
+        return true;
+    }
+
+    public void calcolaCosto() {
 
     }
 
