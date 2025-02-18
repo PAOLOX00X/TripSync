@@ -30,6 +30,14 @@ public class Viaggio {
         return destinazione;
     }
 
+    public String getDataInizio() {
+        return dataInizio;
+    }
+
+    public String getDataFine() {
+        return dataFine;
+    }
+
     public List<MezzoTrasporto> getElencoMezzi() {
         return elencoMezzi;
     }
@@ -45,6 +53,8 @@ public class Viaggio {
     public GestorePartecipazioni getGestore() {
         return gestore;
     }
+
+
 
 
     public Viaggio(int codice, String partenza, String destinazione,  String dataInizio, String dataFine) {
@@ -127,7 +137,7 @@ public class Viaggio {
 
 
     public void visualizzaItinerario() {
-        System.out.println("Codice: "+getCodice()+" Partenza: "+getPartenza()+" Destinazione: "+getDestinazione());
+        System.out.println("Codice: "+getCodice()+" Partenza: "+getPartenza()+" Destinazione: "+getDestinazione()+" Inizio: "+getDataInizio()+" Fine: "+getDataFine());
         System.out.println("Elenco Mezzi:");
         for(MezzoTrasporto mt: elencoMezzi){
             System.out.println(mt.toString());

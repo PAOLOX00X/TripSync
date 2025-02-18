@@ -134,7 +134,12 @@ public class TripSync {
         return viaggioEffettuatoSelezionato;
     }
 
+    public Map<Integer, ViaggioEffettuato> getElencoViaggiEffettuati() {
+        return elencoViaggiEffettuati;
+    }
+
     public void creaViaggio(int codice, String partenza, String destinazione, String dataInizio, String dataFine) {
+        viaggioCorrente=null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dataInizioParsed = LocalDate.parse(dataInizio, formatter);
         LocalDate dataFineParsed = LocalDate.parse(dataFine, formatter);
