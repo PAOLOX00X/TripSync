@@ -54,9 +54,6 @@ public class Viaggio {
         return gestore;
     }
 
-
-
-
     public Viaggio(int codice, String partenza, String destinazione,  String dataInizio, String dataFine) {
         this.codice = codice;
         this.partenza = partenza;
@@ -67,9 +64,7 @@ public class Viaggio {
         this.elencoTappe = new ArrayList<>();
         this.elencoPartecipanti = new HashMap<>();
         this.gestore=new GestorePartecipazioni();
-
     }
-
 
     public void aggiungiMezzo(String nome, double costo) {
         MezzoTrasporto mt;
@@ -86,24 +81,24 @@ public class Viaggio {
         LocalDateTime dataFineViaggio = LocalDateTime.parse(this.dataFine + " 23:59", formatter);
 
         if(dataInizio.equals(dataFine)){
-            System.out.println("Errore: la data di inizio e fine e' la stessa");
-            return 0;
+            throw new CredenzialiNonValideException("Errore: la data di inizio e fine e' la stessa");
+
         }
 
         if(dataInizio.isAfter(dataFine)){
-            System.out.println("Errore: il software non è una macchina del tempo. Inserire date corrette");
-            return 0;
+            throw new CredenzialiNonValideException("Errore: il software non è una macchina del tempo. Inserire date corrette");
+
         }
 
         if (dataInizio.isBefore(dataInizioViaggio) || dataFine.isAfter(dataFineViaggio)) {
-            System.out.println("Errore: Le date della tappa devono essere comprese tra " + this.dataInizio + " e " + this.dataFine);
-            return 0;
+            throw new CredenzialiNonValideException("Errore: Le date della tappa devono essere comprese tra " + this.dataInizio + " e " + this.dataFine);
+
         }
 
         for (Tappa tappa : elencoTappe) {
             if (tappa.getInizio().equals(inizio) && tappa.getFine().equals(fine)) {
-                System.out.println("Errore: Esiste già una tappa con le stesse date e orari.");
-                return 0;
+                throw new CredenzialiNonValideException("Errore: Esiste già una tappa con le stesse date e orari.");
+
             }
 
         }
@@ -112,19 +107,19 @@ public class Viaggio {
 
 
     public void aggiungiTappa(String luogo, String inizio, String fine, double costo) {
-        if(verificaTappa(inizio, fine)!=0){
+        if(verificaTappa(inizio, fine)==1){
             Tappa t=new Tappa(luogo, inizio, fine, costo);
             elencoTappe.add(t);
             System.out.println("Tappa aggiunta correttamente all'elenco");
         }
         else{
-            System.out.println("Errore! Impossibile aggiungere la tappa");
+            throw new CredenzialiNonValideException("Errore! Impossibile aggiungere la tappa");
         }
     }
 
     public void confermaPartecipante(String nomeUtente, Partecipante p) {
             if(elencoPartecipanti.containsKey(nomeUtente)){
-                System.out.println("errore! partecipante già presente");
+                throw new ElementoGiaPresenteException("errore! partecipante già presente");
             }
             else {
                 elencoPartecipanti.put(nomeUtente, p);
@@ -158,13 +153,12 @@ public class Viaggio {
                     return tappaSelezionata;
                 }
             }
-
             return null;
     }
 
     public void modificaTappa(Tappa t, String luogo, String inizio, String fine, double costo){
         int i=elencoTappe.indexOf(t);
-        if(verificaTappa(inizio, fine)!=0){
+        if(verificaTappa(inizio, fine)==1){
             elencoTappe.get(i).setLuogo(luogo);
             elencoTappe.get(i).setInizio(inizio);
             elencoTappe.get(i).setFine(fine);
@@ -172,10 +166,8 @@ public class Viaggio {
             System.out.println("Modifica effettuata con successo!");
         }
         else{
-            System.out.println("Errore! impossibile modificare la tappa!");
-
+            throw new CredenzialiNonValideException("Errore! impossibile modificare la tappa!");
         }
-
     }
 
     public void eliminaTappa(Tappa t){
@@ -246,9 +238,9 @@ public class Viaggio {
         }
 
         if (numeroMinorenni == 0) {
-            System.out.println("Il costo totale del viaggio è " + costoBase + ". Il costo per un partecipante maggiorenne è " + costoPartecipanteMaggiorenne + ". Non ci sono partecipanti minorenni.");
+            System.out.println("Il costo totale del viaggio e' " + costoBase + ". Il costo per un partecipante maggiorenne e' " + costoPartecipanteMaggiorenne + ". Non ci sono partecipanti minorenni.");
         } else {
-            System.out.println("Il costo totale del viaggio è " + costoBase + ". Il costo per un partecipante maggiorenne è " + costoPartecipanteMaggiorenne + ". Il costo per un partecipante minorenne è " + costoPartecipanteMinorenne);
+            System.out.println("Il costo totale del viaggio e' " + costoBase + ". Il costo per un partecipante maggiorenne e' " + costoPartecipanteMaggiorenne + ". Il costo per un partecipante minorenne e' " + costoPartecipanteMinorenne);
         }
 
     }

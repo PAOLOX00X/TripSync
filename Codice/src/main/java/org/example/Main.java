@@ -96,6 +96,29 @@ class AdminFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private void mostraOutputConsole(String titolo) {
+        String output = ConsoleOutputCapturer.stopCapture();
+        if (output.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nessun output da mostrare.", titolo, JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        JTextArea textArea = new JTextArea(output);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        textArea.setMargin(new Insets(10, 10, 10, 10));
+        textArea.setBackground(new Color(245, 245, 245));
+        textArea.setForeground(Color.DARK_GRAY);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+
+
+
+        JOptionPane.showMessageDialog(this, textArea, titolo, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
     private void uc1CreaItinerario() {
         boolean viaggioCreato = false;
         while(!viaggioCreato){
@@ -112,13 +135,15 @@ class AdminFrame extends JFrame {
             String dataFine = JOptionPane.showInputDialog(this, "Data fine (yyyy-MM-dd):");
             if (dataFine == null) return;
 
-            tripSync.creaViaggio(codice, partenza, destinazione, dataInizio, dataFine);
-            if (tripSync.getViaggioCorrente() == null) {
-                JOptionPane.showMessageDialog(this, "Errore nella creazione del viaggio. Controlla i dati inseriti.", "Errore", JOptionPane.ERROR_MESSAGE);
-
-            }else{
+            try {
+                ConsoleOutputCapturer.startCapture();
+                tripSync.creaViaggio(codice, partenza, destinazione, dataInizio, dataFine);
+                mostraOutputConsole("Creazione viaggio");
                 viaggioCreato=true;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
             }
+
         }
 
 
@@ -143,8 +168,9 @@ class AdminFrame extends JFrame {
                 if (costoStr == null) continue;
                 double costoMezzo = Double.parseDouble(costoStr);
 
+                ConsoleOutputCapturer.startCapture();
                 tripSync.aggiungiMezzo(nomeMezzo, costoMezzo);
-                JOptionPane.showMessageDialog(this, "Mezzo aggiunto con successo!");
+                mostraOutputConsole("Aggiunta mezzo");
 
             } else if (choice == 1) {
                 boolean tappaValida = false;
@@ -159,23 +185,23 @@ class AdminFrame extends JFrame {
                     if (cTappa == null) continue;
                     double costoTappa = Double.parseDouble(cTappa);
 
-                    int sizeBefore = tripSync.getViaggioCorrente().getElencoTappe().size();
-                    tripSync.aggiungiTappa(luogo, inizio, fine, costoTappa);
-                    int sizeAfter = tripSync.getViaggioCorrente().getElencoTappe().size();
 
-                    if (sizeAfter > sizeBefore) {
-                        tappaValida = true;
-                        JOptionPane.showMessageDialog(this, "Tappa aggiunta con successo!");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Errore nell'aggiunta della tappa. Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    try {
+                        ConsoleOutputCapturer.startCapture();
+                        tripSync.aggiungiTappa(luogo, inizio, fine, costoTappa);
+                        mostraOutputConsole("Creazione viaggio");
+                        tappaValida=true;
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else {
                 aggiuntaConclusa = true;
             }
         }
+        ConsoleOutputCapturer.startCapture();
         tripSync.confermaInserimento();
-        JOptionPane.showMessageDialog(this, "Itinerario creato e confermato!");
+        mostraOutputConsole("Conferma itinerario");
     }
 
     private void uc2InserisciPartecipante() {
@@ -200,19 +226,18 @@ class AdminFrame extends JFrame {
             if (nomeU == null) return;
 
             if (tripSync.inserisciPartecipante(nomeU) == null) {
-                JOptionPane.showMessageDialog(this, "Errore: Partecipante non valido o non trovato!");
+                JOptionPane.showMessageDialog(this, "Errore: Partecipante non trovato!");
                 continue;
             }
-            int size=tripSync.getViaggioCorrente().getElencoPartecipanti().size();
             int conferma = JOptionPane.showConfirmDialog(this, "Confermare l'inserimento del partecipante?", "Conferma", JOptionPane.YES_NO_OPTION);
             if (conferma == JOptionPane.YES_OPTION) {
-                tripSync.confermaPartecipante();
-                if(tripSync.getViaggioCorrente().getElencoPartecipanti().size()==size+1){
-                    JOptionPane.showMessageDialog(this, "Partecipante inserito con successo!");
-                    partecipanteInserito = true;
-                }
-                else{
-                    JOptionPane.showMessageDialog(this, "Partecipante già presente in elenco!");
+                try{
+                    ConsoleOutputCapturer.startCapture();
+                    tripSync.confermaPartecipante();
+                    mostraOutputConsole("Partecipante Inserito");
+                    partecipanteInserito=true;
+                }catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
 
             }
@@ -232,8 +257,9 @@ class AdminFrame extends JFrame {
                 viaggioTrovato=true;
             }
         }
+        ConsoleOutputCapturer.startCapture();
         tripSync.visualizzaItinerario();
-        JOptionPane.showMessageDialog(this, "Itinerario mostrato su console.");
+        mostraOutputConsole("Itinerario");
     }
 
     private void uc4ModificaTappa() {
@@ -253,7 +279,7 @@ class AdminFrame extends JFrame {
         }
         Tappa tappaSelezionata;
         boolean tappaTrovata=false;
-        while (!tappaTrovata){
+        while (!tappaTrovata) {
             String luogo = JOptionPane.showInputDialog(this, "Luogo tappa da modificare:");
             if (luogo == null) return;
             String inizio = JOptionPane.showInputDialog(this, "Data inizio tappa:");
@@ -263,18 +289,18 @@ class AdminFrame extends JFrame {
             String costStr = JOptionPane.showInputDialog(this, "Costo tappa:");
             if (costStr == null) return;
             double cost = Double.parseDouble(costStr);
-            tappaSelezionata=tripSync.selezionaTappa(luogo, inizio, fine, cost);
-            if ( tappaSelezionata== null) {
+            tappaSelezionata = tripSync.selezionaTappa(luogo, inizio, fine, cost);
+            if (tappaSelezionata == null) {
                 JOptionPane.showMessageDialog(this, "Errore: Tappa non trovata!", "Errore", JOptionPane.ERROR_MESSAGE);
 
-            }else{
-                tappaTrovata=true;
+            } else {
+                tappaTrovata = true;
             }
+        }
 
-            boolean tappaInserita=false;
-            int size=tripSync.getViaggioCorrente().getElencoTappe().size();
+        boolean tappaInserita=false;
 
-            while (!tappaInserita){
+        while (!tappaInserita){
                 String nuovoLuogo = JOptionPane.showInputDialog(this, "Nuovo luogo:");
                 if (nuovoLuogo == null) return;
                 String nuovoInizio = JOptionPane.showInputDialog(this, "Nuovo inizio (yyyy-MM-dd HH:mm):");
@@ -285,19 +311,16 @@ class AdminFrame extends JFrame {
                 if (nuovoCostStr == null) return;
                 double nuovoCost = Double.parseDouble(nuovoCostStr);
 
-                tripSync.modificaTappa(nuovoLuogo, nuovoInizio, nuovoFine, nuovoCost);
-                if(tripSync.getViaggioCorrente().getElencoTappe().size()==size-1){
-                    JOptionPane.showMessageDialog(this, "Tappa modificata con successo!");
+                try{
+                    ConsoleOutputCapturer.startCapture();
+                    tripSync.modificaTappa(nuovoLuogo, nuovoInizio, nuovoFine, nuovoCost);
+                    mostraOutputConsole("Modifica tappa");
                     tappaInserita=true;
+                }catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
-                else{
-                    JOptionPane.showMessageDialog(this, "Impossibile rimuovere la tappa! Inserire dati corretti");
-                }
+
             }
-
-        }
-
-
 
 
 
@@ -313,10 +336,10 @@ class AdminFrame extends JFrame {
 
         for (Map.Entry<Integer, ViaggioEffettuato> entry : elencoViaggi.entrySet()) {
             tripSync.selezionaViaggioEffettuato(entry.getKey());
+            ConsoleOutputCapturer.startCapture();
             tripSync.visualizzaItinerarioPassato();
+            mostraOutputConsole("Itinerari passati");
         }
-
-        JOptionPane.showMessageDialog(this, "Viaggi visualizzati su console");
     }
 
     private void uc8RimuoviTappa() {
@@ -357,8 +380,9 @@ class AdminFrame extends JFrame {
 
         int conferma = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler rimuovere questa tappa?", "Conferma", JOptionPane.YES_NO_OPTION);
         if (conferma == JOptionPane.YES_OPTION) {
+            ConsoleOutputCapturer.startCapture();
             tripSync.eliminaTappa();
-            JOptionPane.showMessageDialog(this, "Tappa eliminata con successo!");
+            mostraOutputConsole("Tappa eliminata");
         }
     }
 
@@ -377,9 +401,9 @@ class AdminFrame extends JFrame {
                 viaggioTrovato=true;
             }
         }
-
+        ConsoleOutputCapturer.startCapture();
         tripSync.calcolaCosto();
-        JOptionPane.showMessageDialog(this, "Costo calcolato e visualizzato su console.");
+        mostraOutputConsole("Costo del viaggio");
     }
 
 
@@ -417,6 +441,29 @@ class UserFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private void mostraOutputConsole(String titolo) {
+        String output = ConsoleOutputCapturer.stopCapture();
+        if (output.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nessun output da mostrare.", titolo, JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        JTextArea textArea = new JTextArea(output);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        textArea.setMargin(new Insets(10, 10, 10, 10));
+        textArea.setBackground(new Color(245, 245, 245));
+        textArea.setForeground(Color.DARK_GRAY);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+
+
+
+
+        JOptionPane.showMessageDialog(this, textArea, titolo, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void uc3VisualizzaItinerarioPartecipante() {
         boolean viaggioTrovato=false;
 
@@ -447,9 +494,9 @@ class UserFrame extends JFrame {
                 partecipanteTrovato=true;
             }
         }
-
+        ConsoleOutputCapturer.startCapture();
         tripSync.visualizzaItinerario();
-        JOptionPane.showMessageDialog(this, "Itinerario mostrato su console.");
+        mostraOutputConsole("Itinerario");
     }
 
     private void uc5GestisciPartecipazione() {
@@ -498,12 +545,13 @@ class UserFrame extends JFrame {
             );
 
             if (scelta == 0) {
-
+                ConsoleOutputCapturer.startCapture();
                 tripSync.confermaPartecipazione(nomeUtente);
-                JOptionPane.showMessageDialog(this, "Partecipazione confermata!");
+                mostraOutputConsole("Conferma partecipazione");
             } else if (scelta == 1) {
+                ConsoleOutputCapturer.startCapture();
                 tripSync.annullaPartecipazione(nomeUtente);
-                JOptionPane.showMessageDialog(this, "Partecipazione annullata!");
+                mostraOutputConsole("Annulla partecipazione");
             }
 
 
@@ -563,9 +611,9 @@ class UserFrame extends JFrame {
                 feedbackValido = true;
             }
         }
-
+        ConsoleOutputCapturer.startCapture();
         tripSync.confermaFeedback();
-        JOptionPane.showMessageDialog(this, "Feedback inserito e confermato!");
+        mostraOutputConsole("Conferma feedback");
     }
 
     private void uc7VisualizzaCatalogoPartecipante() {
@@ -578,7 +626,9 @@ class UserFrame extends JFrame {
 
         for (Map.Entry<Integer, ViaggioEffettuato> entry : elencoViaggi.entrySet()) {
             tripSync.selezionaViaggioEffettuato(entry.getKey());
+            ConsoleOutputCapturer.startCapture();
             tripSync.visualizzaItinerarioPassato();
+            mostraOutputConsole("Itinerario passato");
         }
 
         JOptionPane.showMessageDialog(this, "Viaggi visualizzati su console");
@@ -592,8 +642,8 @@ class UserFrame extends JFrame {
             if (codStr == null) return;
             int codice = Integer.parseInt(codStr);
 
-            if (tripSync.selezionaViaggioEffettuato(codice) == null) {
-                JOptionPane.showMessageDialog(this, "Errore: Viaggio passato non trovato!", "Errore", JOptionPane.ERROR_MESSAGE);
+            if (tripSync.selezionaViaggio(codice) == null) {
+                JOptionPane.showMessageDialog(this, "Errore: Viaggio non trovato!", "Errore", JOptionPane.ERROR_MESSAGE);
 
             }else{
                 viaggioTrovato=true;
@@ -613,9 +663,10 @@ class UserFrame extends JFrame {
                 partecipanteTrovato=true;
             }
         }
-
+        ConsoleOutputCapturer.startCapture();
         tripSync.calcolaCosto();
-        JOptionPane.showMessageDialog(this, "Costo calcolato e visualizzato su console.");
+        mostraOutputConsole("Costo del viaggio");
     }
 
 }
+

@@ -31,9 +31,11 @@ public class TripSyncTest {
         assertNotNull(tripSync.getViaggioCorrente());
 
         //L'operazione non va a buon fine perchè la data di inizio è più antica rispetto alla data odierna
-        tripSync.creaViaggio(1,"Catania", "Napoli", "2024-06-19", "2025-06-23");
+        Exception exception1= assertThrows(CredenzialiNonValideException.class,() -> tripSync.creaViaggio(1,"Catania", "Napoli", "2024-06-19", "2025-06-23"));
+        assertEquals("Errore: La data di inizio non può essere nel passato.", exception1.getMessage());
         //L'operazione non va a buon fine perchè la data di fine è più antica rispetto alla data di inizio
-        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-18");
+        Exception exception2=assertThrows(CredenzialiNonValideException.class, ()->tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-18"));
+        assertEquals("Errore: La data di fine non può essere precedente alla data di inizio.", exception2.getMessage());
     }
 
     @Test
@@ -56,13 +58,17 @@ public class TripSyncTest {
 
         //Le seguenti operazioni non vanno a buon fine in quanto in una gli orari sono gli stessi e nell'altra
         // uguali a quelli di un'altra tappa
-        tripSync.aggiungiTappa("Campo dei fiori", "2025-06-25 10:00", "2025-06-25 10:00", 0.00);
-        tripSync.aggiungiTappa("Fontana di trevi", "2025-06-25 10:30", "2025-06-25 12:30", 23.00);
+        Exception exception1=assertThrows(CredenzialiNonValideException.class, ()->tripSync.aggiungiTappa("Campo dei fiori", "2025-06-25 10:00", "2025-06-25 10:00", 0.00));
+        assertEquals("Errore: la data di inizio e fine e' la stessa", exception1.getMessage());
+        Exception exception2=assertThrows(CredenzialiNonValideException.class, ()->tripSync.aggiungiTappa("Fontana di trevi", "2025-06-25 10:30", "2025-06-25 12:30", 23.00));
+        assertEquals("Errore: Esiste già una tappa con le stesse date e orari.", exception2.getMessage());
 
-        //Le seguenti operazioni non vanno a buon fine perchè la data di inizio è più antica della data di inizio del viaggio
+        //Le seguenti operazioni non vanno a buon fine perchè la data di inizio è più antica della data di inizio del Viaggio
         //e la data di fine è più recente della data di fine del viaggio
-        tripSync.aggiungiTappa("Campo dei fiori", "2025-06-18 10:00", "2025-06-18 12:00", 0.00);
-        tripSync.aggiungiTappa("Campo dei fiori", "2025-06-28 10:00", "2025-06-28 12:00", 0.00);
+        Exception exception3=assertThrows(CredenzialiNonValideException.class, ()->tripSync.aggiungiTappa("Campo dei fiori", "2025-06-18 10:00", "2025-06-18 12:00", 0.00));
+        assertEquals("Errore: Le date della tappa devono essere comprese tra 2025-06-19 e 2025-06-27", exception3.getMessage());
+        Exception exception4=assertThrows(CredenzialiNonValideException.class, ()->tripSync.aggiungiTappa("Campo dei fiori", "2025-06-28 10:00", "2025-06-28 12:00", 0.00));
+        assertEquals("Errore: Le date della tappa devono essere comprese tra 2025-06-19 e 2025-06-27", exception4.getMessage());
 
         //ci aspettiamo che la dimensione dell'elenco di tappe rimanga immutata
         assertEquals(2, tripSync.getViaggioCorrente().getElencoTappe().size());
@@ -78,8 +84,7 @@ public class TripSyncTest {
 
 
         //La seguente operazione non va a buon fine perchè il viaggio esiste già
-        tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23");
-
+        assertThrows(ElementoGiaPresenteException.class, ()->tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23"));
         //ci si aspetta che la dimensione della mappa rimanga immutata
         assertEquals(1, tripSync.getElencoViaggi().size());
     }
@@ -116,7 +121,7 @@ public class TripSyncTest {
 
         //l'operazione non va a buon fine perchè l'utente è già presente nell'elenco dei partecipanti
         assertNotNull(tripSync.inserisciPartecipante("Barbara"));
-        tripSync.confermaPartecipante();
+        assertThrows(ElementoGiaPresenteException.class, ()->tripSync.confermaPartecipante());
     }
 
     @Test
@@ -157,7 +162,8 @@ public class TripSyncTest {
         tripSync.modificaTappa("Duomo di Milano", "2025-06-25 16:00", "2025-06-25 18:00", 35.00);
 
         //L'operazione non va a buon fine perchè l'ora di inizio è maggiore
-        tripSync.modificaTappa("Stadio San Siro", "2025-06-25 19:00", "2025-06-25 18:00", 35.00);
+        Exception exception1=assertThrows(CredenzialiNonValideException.class, ()->tripSync.modificaTappa("Stadio San Siro", "2025-06-25 19:00", "2025-06-25 18:00", 35.00));
+        assertEquals("Errore: il software non è una macchina del tempo. Inserire date corrette", exception1.getMessage());
     }
 
 

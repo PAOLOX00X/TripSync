@@ -36,8 +36,6 @@ public class TripSync {
         this.elencoUtenti.put("Paolo", p3);
         this.elencoUtenti.put("Federico", p4);
         this.elencoUtenti.put("Beatrice", p5);
-
-        System.out.println("Utenti caricati con successo");
     }
 
     public void loadViaggiEffettuati(){
@@ -92,9 +90,6 @@ public class TripSync {
         elencoViaggiEffettuati.put(1, ve1);
         elencoViaggiEffettuati.put(2, ve2);
         elencoViaggiEffettuati.put(3, ve3);
-
-        System.out.println("Viaggi caricati con successo!");
-
     }
 
 
@@ -151,20 +146,18 @@ public class TripSync {
                     System.out.println("Viaggio creato correttamente");
                 }
                 else{
-                    System.out.println("Errore: La data di fine non può essere precedente alla data di inizio.");
+                    throw new CredenzialiNonValideException("Errore: La data di fine non può essere precedente alla data di inizio.");
                 }
             }else{
-                System.out.println("Errore: La data di inizio non può essere nel passato.");
+                throw new CredenzialiNonValideException("Errore: La data di inizio non può essere nel passato.");
             }
         }
         else{
-            System.out.println("Impossibile creare il viaggio perche il codice esiste gia");
+            throw new ElementoGiaPresenteException("Impossibile creare il viaggio perche il codice esiste gia");
         }
-
     }
 
     public void aggiungiMezzo(String nome, double costo) {
-
         viaggioCorrente.aggiungiMezzo(nome, costo);
     }
 
@@ -179,9 +172,7 @@ public class TripSync {
         viaggioCorrente=null;
     }
 
-
     public Viaggio selezionaViaggio(int codice) {
-
         if(elencoViaggi.containsKey(codice)){
             viaggioCorrente= elencoViaggi.get(codice);
             return viaggioCorrente;
@@ -190,7 +181,6 @@ public class TripSync {
     }
 
     public Partecipante inserisciPartecipante(String nomeUtente) {
-
         if(elencoUtenti.containsKey(nomeUtente)){
             partecipanteSelezionato= elencoUtenti.get(nomeUtente);
             return partecipanteSelezionato;
@@ -203,17 +193,12 @@ public class TripSync {
         viaggioCorrente.confermaPartecipante(nomeUtente, partecipanteSelezionato);
     }
 
-
-
     public void visualizzaItinerario() {
-
         viaggioCorrente.visualizzaItinerario();
     }
 
-
     public Tappa selezionaTappa(String luogo, String inizio, String fine, double costo){
         tappaSelezionata=viaggioCorrente.selezionaTappa(luogo, inizio, fine, costo);
-
         return tappaSelezionata;
     }
 
@@ -245,7 +230,6 @@ public class TripSync {
         if (partecipanteSelezionato != null && partecipanteSelezionato.getPassword().equals(password)) {
             return partecipanteSelezionato;
         } else {
-            System.out.println("Credenziali non valide o partecipante non trovato.");
             return null;
         }
     }
@@ -259,7 +243,6 @@ public class TripSync {
         viaggioEffettuatoSelezionato.confermaFeedback(feedbackCorrente);
     }
 
-
     public void visualizzaItinerarioPassato(){
         viaggioEffettuatoSelezionato.visualizzaItinerario();
     }
@@ -270,7 +253,6 @@ public class TripSync {
 
     public void annullaPartecipazione(String nomeUtente){
         viaggioCorrente.annullaPartecipazione(nomeUtente);
-
     }
 
     public boolean verificaCredenziali(String nomeUtente, String password){
@@ -280,8 +262,5 @@ public class TripSync {
     public void calcolaCosto(){
         viaggioCorrente.calcolaCosto();
     }
-
-
-
 
 }
