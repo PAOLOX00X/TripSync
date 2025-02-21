@@ -7,7 +7,5 @@ public abstract class StatoPartecipazione {
 
     public void annulla(GestorePartecipazioni gestore, String nomeUtente) {
         System.out.println("Errore: Operazione non consentita in questo stato.");
-
     }
-
 }

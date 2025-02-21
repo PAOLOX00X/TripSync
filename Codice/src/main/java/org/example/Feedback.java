@@ -17,8 +17,6 @@ public class Feedback {
         return descrizione;
     }
 
-
-
     @Override
     public String toString() {
         return "Feedback{" +

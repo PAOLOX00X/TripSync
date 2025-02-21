@@ -32,5 +32,4 @@ public class GestorePartecipazioni {
         elencoPartecipazioni.put(nomeUtente, stato);
     }
 
-
 }

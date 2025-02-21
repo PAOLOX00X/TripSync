@@ -130,7 +130,6 @@ public class Viaggio {
             }
     }
 
-
     public void visualizzaItinerario() {
         System.out.println("Codice: "+getCodice()+" Partenza: "+getPartenza()+" Destinazione: "+getDestinazione()+" Inizio: "+getDataInizio()+" Fine: "+getDataFine());
         System.out.println("Elenco Mezzi:");
@@ -221,28 +220,31 @@ public class Viaggio {
             context.setStrategy(au);
             costoBase = context.executeStrategy(costoBase);
         }
+
         double costoPartecipanteMaggiorenne = costoBase / numeroPartecipanti;
         double costoPartecipanteMinorenne = 0.0;
         int numeroMinorenni = 0;
+
+        int numeroMaggiorenni=numeroPartecipanti;
 
         for (Map.Entry<String, StatoPartecipazione> entry : gestore.getElencoPartecipazioni().entrySet()) {
             if (entry.getValue() instanceof StatoConfermato || entry.getValue() instanceof StatoInAttesa) {
                 Partecipante partecipante = elencoPartecipanti.get(entry.getKey());
                 if (isMinorenne(partecipante.getDataNascita())) {
                     numeroMinorenni++;
+                    numeroMaggiorenni--;
                     PartecipanteMinorenne pm=new PartecipanteMinorenne();
                     context.setStrategy(pm);
                     costoPartecipanteMinorenne = context.executeStrategy(costoPartecipanteMaggiorenne);
                 }
             }
         }
-
         if (numeroMinorenni == 0) {
             System.out.println("Il costo totale del viaggio e' " + costoBase + ". Il costo per un partecipante maggiorenne e' " + costoPartecipanteMaggiorenne + ". Non ci sono partecipanti minorenni.");
         } else {
+            costoBase=(costoPartecipanteMinorenne*numeroMinorenni)+(costoPartecipanteMaggiorenne*numeroMaggiorenni);
             System.out.println("Il costo totale del viaggio e' " + costoBase + ". Il costo per un partecipante maggiorenne e' " + costoPartecipanteMaggiorenne + ". Il costo per un partecipante minorenne e' " + costoPartecipanteMinorenne);
         }
-
     }
 
     public boolean isMinorenne(String dataNascita) {
@@ -259,6 +261,7 @@ public class Viaggio {
         LocalDate dataInizioParsed = LocalDate.parse(dataInizio, formatter);
         LocalDate dataFineParsed = LocalDate.parse(dataFine, formatter);
         LocalDate currentDate = dataInizioParsed;
+
         while (!currentDate.isAfter(dataFineParsed)) {
             String giornoMese = currentDate.format(DateTimeFormatter.ofPattern("dd-MM"));
             if (festivita.contains(giornoMese)) {

@@ -20,7 +20,9 @@ public class Partecipante {
         return password;
     }
 
-    public String getDataNascita() { return dataNascita; }
+    public String getDataNascita() {
+        return dataNascita;
+    }
 
     public Feedback inserisciFeedback(Integer numeroStelle, String descrizione){
         if(numeroStelle>=0 && numeroStelle<=5){
@@ -36,5 +38,3 @@ public class Partecipante {
     }
 
 }
-
-

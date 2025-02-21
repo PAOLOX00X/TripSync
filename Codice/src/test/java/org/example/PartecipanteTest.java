@@ -27,7 +27,6 @@ class PartecipanteTest {
     public void TestInserisciFeedback(){
         assertNotNull(p.inserisciFeedback(5, "ottimo viaggio"));
 
-
         //L'operazione restituisce un valore nullo perchè il numero di stelle è maggiore di 5
         assertNull(p.inserisciFeedback(6, "ciao"));
     }

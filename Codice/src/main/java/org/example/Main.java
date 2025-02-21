@@ -219,7 +219,6 @@ class AdminFrame extends JFrame {
                 viaggioTrovato=true;
             }
         }
-
         boolean partecipanteInserito = false;
         while (!partecipanteInserito) {
             String nomeU = JOptionPane.showInputDialog(this, "Nome utente del partecipante:");
@@ -272,7 +271,6 @@ class AdminFrame extends JFrame {
 
             if (tripSync.selezionaViaggio(codice) == null) {
                 JOptionPane.showMessageDialog(this, "Errore: Viaggio non trovato!");
-
             }else{
                 viaggioTrovato=true;
             }
@@ -292,7 +290,6 @@ class AdminFrame extends JFrame {
             tappaSelezionata = tripSync.selezionaTappa(luogo, inizio, fine, cost);
             if (tappaSelezionata == null) {
                 JOptionPane.showMessageDialog(this, "Errore: Tappa non trovata!", "Errore", JOptionPane.ERROR_MESSAGE);
-
             } else {
                 tappaTrovata = true;
             }
@@ -519,7 +516,7 @@ class UserFrame extends JFrame {
 
 
 
-        while (!partecipanteTrovato){
+        while (!partecipanteTrovato) {
             String nomeUtente = JOptionPane.showInputDialog(this, "Nome utente:");
             if (nomeUtente == null) return;
             String password = JOptionPane.showInputDialog(this, "Password:");
@@ -528,40 +525,32 @@ class UserFrame extends JFrame {
             if (tripSync.inserisciCredenziali(nomeUtente, password, "corrente") == null) {
                 JOptionPane.showMessageDialog(this, "Credenziali non valide o partecipante non trovato!", "Errore", JOptionPane.ERROR_MESSAGE);
 
-            }else{
-                partecipanteTrovato=true;
+            } else {
+                partecipanteTrovato = true;
+                String[] options = {"Conferma Partecipazione", "Annulla Partecipazione"};
+                int scelta = JOptionPane.showOptionDialog(
+                        this,
+                        "Vuoi confermare o annullare la partecipazione?",
+                        "Gestione Partecipazione",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                );
+
+                if (scelta == 0) {
+                    ConsoleOutputCapturer.startCapture();
+                    tripSync.confermaPartecipazione(nomeUtente);
+                    mostraOutputConsole("Conferma partecipazione");
+                } else if (scelta == 1) {
+                    ConsoleOutputCapturer.startCapture();
+                    tripSync.annullaPartecipazione(nomeUtente);
+                    mostraOutputConsole("Annulla partecipazione");
+                }
             }
-
-            String[] options = {"Conferma Partecipazione", "Annulla Partecipazione"};
-            int scelta = JOptionPane.showOptionDialog(
-                    this,
-                    "Vuoi confermare o annullare la partecipazione?",
-                    "Gestione Partecipazione",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (scelta == 0) {
-                ConsoleOutputCapturer.startCapture();
-                tripSync.confermaPartecipazione(nomeUtente);
-                mostraOutputConsole("Conferma partecipazione");
-            } else if (scelta == 1) {
-                ConsoleOutputCapturer.startCapture();
-                tripSync.annullaPartecipazione(nomeUtente);
-                mostraOutputConsole("Annulla partecipazione");
-            }
-
-
-
 
         }
-
-
-
-
     }
 
     private void uc6InserisciFeedback() {
@@ -631,7 +620,7 @@ class UserFrame extends JFrame {
             mostraOutputConsole("Itinerario passato");
         }
 
-        JOptionPane.showMessageDialog(this, "Viaggi visualizzati su console");
+
     }
 
     private void uc9CalcolaCostoPartecipante() {

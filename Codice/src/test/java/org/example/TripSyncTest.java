@@ -13,11 +13,9 @@ public class TripSyncTest {
 
     @BeforeEach
     public void setUp() {
-
         if(tripSync == null) {
             tripSync = TripSync.getInstance();
         }
-
         tripSync.reset();
     }
 
@@ -82,7 +80,6 @@ public class TripSyncTest {
         assertEquals(1, tripSync.getElencoViaggi().size());
         assertNotNull(tripSync.getElencoViaggi().get(1));
 
-
         //La seguente operazione non va a buon fine perchè il viaggio esiste già
         assertThrows(ElementoGiaPresenteException.class, ()->tripSync.creaViaggio(1,"Catania", "Napoli", "2025-06-19", "2025-06-23"));
         //ci si aspetta che la dimensione della mappa rimanga immutata
@@ -97,8 +94,6 @@ public class TripSyncTest {
 
         //Il valore è nullo perchè il viaggio non esiste
         assertNull(tripSync.selezionaViaggio(3));
-
-
     }
 
     @Test
@@ -107,7 +102,6 @@ public class TripSyncTest {
 
         //l'operazione non restituisce un valore perchè l'utente non esiste
         assertNull(tripSync.inserisciPartecipante("Pietro"));
-
     }
 
     @Test
@@ -131,7 +125,6 @@ public class TripSyncTest {
         tripSync.confermaInserimento();
         assertNotNull(tripSync.selezionaViaggio(3));
         tripSync.visualizzaItinerario();
-
     }
 
     @Test
@@ -143,10 +136,8 @@ public class TripSyncTest {
         assertNotNull(tripSync.selezionaViaggio(3));
         assertNotNull(tripSync.selezionaTappa("Ristorante Barbieri", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
 
-
         //L'operazione restituisce un valore nullo perchè la tappa non esiste
         assertNull(tripSync.selezionaTappa("Castello di Paterno", "2025-06-25 13:30", "2025-06-25 15:30", 35.00));
-
 
     }
 
@@ -179,7 +170,6 @@ public class TripSyncTest {
 
         tripSync.eliminaTappa();
         assertEquals(0, tripSync.getViaggioCorrente().getElencoTappe().size());
-
     }
 
     @Test
@@ -188,7 +178,6 @@ public class TripSyncTest {
 
         //l'operazione restituisce un valore null perchè il viaggio non esiste
         assertNull(tripSync.selezionaViaggioEffettuato(5));
-
     }
 
     @Test
@@ -302,7 +291,6 @@ public class TripSyncTest {
         tripSync.confermaPartecipazione("Barbara");
         assertEquals(true, tripSync.verificaCredenziali("Barbara", "bf231202"));
         */
-
 
         tripSync.annullaPartecipazione("Barbara");
         //L'operazione non va a buon fine perchè la partecipazione è stata annullata

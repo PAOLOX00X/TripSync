@@ -92,7 +92,6 @@ public class TripSync {
         elencoViaggiEffettuati.put(3, ve3);
     }
 
-
     public static TripSync getInstance() {
         if (instance == null) {
             instance = new TripSync();
